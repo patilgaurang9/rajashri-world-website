@@ -20,7 +20,7 @@ function FeaturedToursContent() {
   }, [])
 
   return (
-    <section className="py-16 sm:py-20 bg-gray-50">
+    <section className="py-16 sm:py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
@@ -43,7 +43,7 @@ function FeaturedToursContent() {
             asChild 
             size="lg" 
             variant="outline" 
-            className="border-orange-500 text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="border-orange-500 text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 shadow-lg rounded-full"
           >
             <Link href="/tours">View All Tours</Link>
           </Button>

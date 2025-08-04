@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 
 export function CTASection() {
   return (
-    <section className="py-20 bg-gradient-to-r from-orange-50 to-red-50">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
           Ready for Your Next{" "}
@@ -16,11 +16,11 @@ export function CTASection() {
           <Button
             asChild
             size="lg"
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg px-8 py-6 shadow-lg"
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg px-8 py-6 shadow-lg rounded-full"
           >
             <Link href="/tours">Browse Tours</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="border-orange-500 bg-white/80 hover:bg-orange-50 text-orange-600 hover:text-orange-700 text-lg px-8 py-6 shadow-lg">
+          <Button asChild size="lg" variant="outline" className="border-orange-500 bg-white/80 hover:bg-orange-50 text-orange-600 hover:text-orange-700 text-lg px-8 py-6 shadow-lg rounded-full">
             <Link href="/custom-booking">Create Custom Tour</Link>
           </Button>
         </div>

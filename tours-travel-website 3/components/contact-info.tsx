@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react"
 export function ContactInfo() {
   return (
     <div className="space-y-6">
-      <Card className="bg-white border-gray-200 shadow-lg">
+      <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-gray-900">Contact Information</h3>
           <div className="space-y-4">
@@ -44,10 +44,10 @@ export function ContactInfo() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-gray-200 shadow-lg">
+      <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-4 text-gray-900">Find Us</h3>
-          <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="aspect-video bg-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1234567890123!2d-74.0059413!3d40.7127753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQyJzQ2LjAiTiA3NMKwMDAnMjEuNCJX!5e0!3m2!1sen!2sus!4v1234567890123"
               width="100%"
@@ -56,7 +56,7 @@ export function ContactInfo() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="rounded-lg"
+              className="rounded-2xl"
             />
           </div>
         </CardContent>

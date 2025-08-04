@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -73,8 +74,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#0f172a' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#ffffff' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -88,17 +89,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#0f172a" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Wanderlust Tours" />
-        <script
+      <body className="bg-white text-gray-900 antialiased" suppressHydrationWarning>
+        <Navbar />
+        <main className="min-h-screen">{children}</main>
+        <Footer />
+        <PerformanceMonitor />
+        <Script
+          id="service-worker"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -115,12 +113,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className="bg-slate-900 text-white antialiased">
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-        <PerformanceMonitor />
       </body>
     </html>
   )

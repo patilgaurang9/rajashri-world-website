@@ -28,6 +28,7 @@
     --chart-3: 215.4 16.3% 46.9%;
     --chart-4: 25 95% 53%;
     --chart-5: 0 84.2% 60.2%;
+    --vh: 1vh;
   }
 }
 
@@ -38,6 +39,12 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Hero section 95% height without hydration issues */
+.hero-section {
+  height: calc(95 * var(--vh));
+  min-height: 95vh;
 }
 
 /* Custom scrollbar */

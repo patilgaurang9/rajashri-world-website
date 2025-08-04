@@ -23,7 +23,7 @@ export function ToursFilters() {
   }
 
   return (
-    <Card className="bg-white border-gray-200 shadow-lg sticky top-24">
+    <Card className="bg-white border-gray-200 shadow-lg sticky top-24 rounded-2xl">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-gray-900">Filter Tours</CardTitle>
       </CardHeader>
@@ -42,7 +42,7 @@ export function ToursFilters() {
         <div className="space-y-3">
           <Label className="text-sm font-medium text-gray-700">Duration</Label>
           <Select value={duration} onValueChange={setDuration}>
-            <SelectTrigger className="bg-white border-gray-300">
+            <SelectTrigger className="bg-white border-gray-300 rounded-xl">
               <SelectValue placeholder="Select duration" />
             </SelectTrigger>
             <SelectContent>
@@ -58,7 +58,7 @@ export function ToursFilters() {
         <div className="space-y-3">
           <Label className="text-sm font-medium text-gray-700">Destination</Label>
           <Select value={destination} onValueChange={setDestination}>
-            <SelectTrigger className="bg-white border-gray-300">
+            <SelectTrigger className="bg-white border-gray-300 rounded-xl">
               <SelectValue placeholder="Select destination" />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,7 @@ export function ToursFilters() {
           </div>
         </div>
 
-        <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg">
+        <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg rounded-full">
           Apply Filters
         </Button>
       </CardContent>

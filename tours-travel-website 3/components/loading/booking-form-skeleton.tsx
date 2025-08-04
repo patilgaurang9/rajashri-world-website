@@ -11,26 +11,26 @@ export function BookingFormSkeleton() {
           <div className="flex items-center gap-4 mb-8">
             <Skeleton className="w-16 h-16 rounded-full" />
             <div className="space-y-2">
-              <Skeleton className="h-8 w-64" />
-              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-8 w-64 rounded-lg" />
+              <Skeleton className="h-5 w-32 rounded-lg" />
             </div>
           </div>
 
           {/* Step 1 Skeleton */}
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="bg-slate-700/50">
-              <Skeleton className="h-6 w-48" />
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm rounded-2xl">
+            <CardHeader className="bg-slate-700/50 rounded-t-2xl">
+              <Skeleton className="h-6 w-48 rounded-lg" />
             </CardHeader>
             <CardContent className="p-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="border-2 border-slate-600 rounded-xl p-4">
-                    <Skeleton className="h-4 w-20 mb-2" />
-                    <Skeleton className="h-3 w-16 mb-1" />
-                    <Skeleton className="h-3 w-12 mb-2" />
-                    <Skeleton className="h-3 w-14 mb-1" />
-                    <Skeleton className="h-5 w-24 mb-2" />
-                    <Skeleton className="h-3 w-20 mb-3" />
+                  <div key={index} className="border-2 border-slate-600 rounded-2xl p-4">
+                    <Skeleton className="h-4 w-20 mb-2 rounded-lg" />
+                    <Skeleton className="h-3 w-16 mb-1 rounded-lg" />
+                    <Skeleton className="h-3 w-12 mb-2 rounded-lg" />
+                    <Skeleton className="h-3 w-14 mb-1 rounded-lg" />
+                    <Skeleton className="h-5 w-24 mb-2 rounded-lg" />
+                    <Skeleton className="h-3 w-20 mb-3 rounded-lg" />
                     <Skeleton className="h-4 w-4 rounded-full" />
                   </div>
                 ))}
@@ -39,21 +39,21 @@ export function BookingFormSkeleton() {
           </Card>
 
           {/* Step 2 Skeleton */}
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="bg-slate-700/50">
-              <Skeleton className="h-6 w-56" />
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm rounded-2xl">
+            <CardHeader className="bg-slate-700/50 rounded-t-2xl">
+              <Skeleton className="h-6 w-56 rounded-lg" />
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               {/* Traveller counts */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="space-y-3">
-                    <Skeleton className="h-4 w-12" />
-                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-4 w-12 rounded-lg" />
+                    <Skeleton className="h-3 w-16 rounded-lg" />
                     <div className="flex items-center gap-3">
-                      <Skeleton className="h-8 w-8 rounded" />
-                      <Skeleton className="h-6 w-6" />
-                      <Skeleton className="h-8 w-8 rounded" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                      <Skeleton className="h-6 w-6 rounded-lg" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
                     </div>
                   </div>
                 ))}
@@ -64,16 +64,16 @@ export function BookingFormSkeleton() {
                 <div className="grid md:grid-cols-3 gap-4">
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div key={index} className="space-y-2">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-10 w-full rounded" />
+                      <Skeleton className="h-4 w-20 rounded-lg" />
+                      <Skeleton className="h-10 w-full rounded-xl" />
                     </div>
                   ))}
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div key={index} className="space-y-2">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-10 w-full rounded" />
+                      <Skeleton className="h-4 w-24 rounded-lg" />
+                      <Skeleton className="h-10 w-full rounded-xl" />
                     </div>
                   ))}
                 </div>
@@ -82,25 +82,25 @@ export function BookingFormSkeleton() {
           </Card>
 
           {/* Step 3 Skeleton */}
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="bg-slate-700/50">
-              <Skeleton className="h-6 w-48" />
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm rounded-2xl">
+            <CardHeader className="bg-slate-700/50 rounded-t-2xl">
+              <Skeleton className="h-6 w-48 rounded-lg" />
             </CardHeader>
             <CardContent className="p-6">
-              <Skeleton className="h-4 w-64 mb-6" />
+              <Skeleton className="h-4 w-64 mb-6 rounded-lg" />
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-4 border-b border-slate-600 pb-3">
-                  <Skeleton className="h-5 w-20" />
-                  <Skeleton className="h-5 w-12" />
-                  <Skeleton className="h-5 w-16" />
+                  <Skeleton className="h-5 w-20 rounded-lg" />
+                  <Skeleton className="h-5 w-12 rounded-lg" />
+                  <Skeleton className="h-5 w-16 rounded-lg" />
                 </div>
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="grid grid-cols-3 gap-4 items-center py-4">
                     <div className="space-y-1">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-3 w-32" />
+                      <Skeleton className="h-4 w-24 rounded-lg" />
+                      <Skeleton className="h-3 w-32 rounded-lg" />
                     </div>
-                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-16 rounded-lg" />
                     <Skeleton className="h-4 w-4 rounded-full" />
                   </div>
                 ))}
@@ -111,25 +111,25 @@ export function BookingFormSkeleton() {
           {/* Terms and Button */}
           <div className="space-y-6">
             <div className="flex items-start space-x-3">
-              <Skeleton className="h-4 w-4 rounded" />
-              <Skeleton className="h-4 w-64" />
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-64 rounded-lg" />
             </div>
-            <Skeleton className="h-14 w-full rounded-xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
           </div>
         </div>
 
         {/* Sidebar Skeleton */}
         <div className="lg:col-span-1">
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm rounded-2xl">
             <CardContent className="p-6 space-y-4">
-              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-6 w-24 rounded-lg" />
               <div className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-full rounded-lg" />
+                <Skeleton className="h-4 w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4 rounded-lg" />
               </div>
-              <div className="p-3 rounded-lg border border-slate-600">
-                <Skeleton className="h-6 w-32" />
+              <div className="p-3 rounded-2xl border border-slate-600">
+                <Skeleton className="h-6 w-32 rounded-lg" />
               </div>
             </CardContent>
           </Card>

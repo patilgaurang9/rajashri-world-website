@@ -5,8 +5,8 @@ export function SearchSkeleton() {
     <div className="space-y-4">
       {/* Search bar skeleton */}
       <div className="flex gap-4">
-        <Skeleton className="h-12 flex-1 rounded-lg" />
-        <Skeleton className="h-12 w-24 rounded-lg" />
+        <Skeleton className="h-12 flex-1 rounded-xl" />
+        <Skeleton className="h-12 w-24 rounded-xl" />
       </div>
 
       {/* Filter skeleton */}

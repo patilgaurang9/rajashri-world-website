@@ -20,7 +20,7 @@ export function ButtonLoader({
   ...props
 }: ButtonLoaderProps) {
   return (
-    <Button className={cn(className)} disabled={disabled || loading} variant={variant} size={size} {...props}>
+    <Button className={cn("rounded-full", className)} disabled={disabled || loading} variant={variant} size={size} {...props}>
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {children}
     </Button>

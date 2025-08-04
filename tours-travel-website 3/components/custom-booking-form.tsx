@@ -33,7 +33,7 @@ export function CustomBookingForm() {
 
   if (isSubmitted) {
     return (
-      <Card className="bg-white border-gray-200 shadow-lg">
+      <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
         <CardContent className="p-8 text-center">
           <div className="text-6xl mb-4">✨</div>
           <h2 className="text-2xl font-bold mb-4 text-orange-600">Custom Tour Request Received!</h2>
@@ -41,7 +41,7 @@ export function CustomBookingForm() {
             Our travel experts will create a personalized itinerary based on your preferences and contact you within 48
             hours.
           </p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+          <Button onClick={() => setIsSubmitted(false)} variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50 rounded-full">
             Create Another Custom Tour
           </Button>
         </CardContent>
@@ -50,7 +50,7 @@ export function CustomBookingForm() {
   }
 
   return (
-    <Card className="bg-white border-gray-200 shadow-lg">
+    <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-gray-900">Create Your Custom Tour</CardTitle>
       </CardHeader>
@@ -59,11 +59,11 @@ export function CustomBookingForm() {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-700">Full Name</Label>
-              <Input id="name" required className="bg-white border-gray-300" />
+              <Input id="name" required className="bg-white border-gray-300 rounded-xl" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">Email</Label>
-              <Input id="email" type="email" required className="bg-white border-gray-300" />
+              <Input id="email" type="email" required className="bg-white border-gray-300 rounded-xl" />
             </div>
           </div>
 
@@ -72,7 +72,7 @@ export function CustomBookingForm() {
             <Textarea
               id="destinations"
               placeholder="Tell us about the places you'd like to visit..."
-              className="bg-white border-gray-300"
+              className="bg-white border-gray-300 rounded-xl"
               rows={3}
             />
           </div>
@@ -80,12 +80,12 @@ export function CustomBookingForm() {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startDate" className="text-gray-700">Travel Start Date</Label>
-              <Input id="startDate" type="date" required className="bg-white border-gray-300" />
+              <Input id="startDate" type="date" required className="bg-white border-gray-300 rounded-xl" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration" className="text-gray-700">Duration</Label>
               <Select>
-                <SelectTrigger className="bg-white border-gray-300">
+                <SelectTrigger className="bg-white border-gray-300 rounded-xl">
                   <SelectValue placeholder="Select duration" />
                 </SelectTrigger>
                 <SelectContent>
@@ -111,7 +111,7 @@ export function CustomBookingForm() {
           <div className="space-y-2">
             <Label className="text-gray-700">Accommodation Type</Label>
             <Select>
-              <SelectTrigger className="bg-white border-gray-300">
+              <SelectTrigger className="bg-white border-gray-300 rounded-xl">
                 <SelectValue placeholder="Select accommodation" />
               </SelectTrigger>
               <SelectContent>
@@ -154,7 +154,7 @@ export function CustomBookingForm() {
           <div className="space-y-2">
             <Label htmlFor="travelers" className="text-gray-700">Number of Travelers</Label>
             <Select>
-              <SelectTrigger className="bg-white border-gray-300">
+              <SelectTrigger className="bg-white border-gray-300 rounded-xl">
                 <SelectValue placeholder="Select number of travelers" />
               </SelectTrigger>
               <SelectContent>
@@ -172,14 +172,14 @@ export function CustomBookingForm() {
             <Textarea
               id="additional"
               placeholder="Any special requirements, dietary restrictions, accessibility needs, etc."
-              className="bg-white border-gray-300"
+              className="bg-white border-gray-300 rounded-xl"
               rows={4}
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg py-6 shadow-lg"
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg py-6 shadow-lg rounded-full"
           >
             Submit Custom Tour Request
           </Button>

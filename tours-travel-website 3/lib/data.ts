@@ -26,7 +26,7 @@ export const tours: Tour[] = [
     title: "Bali Cultural Adventure",
     description:
       "Immerse yourself in the rich culture and stunning landscapes of Bali. Visit ancient temples, experience traditional ceremonies, and relax on pristine beaches.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/istockphoto-675172642-612x612.jpg",
     price: 1299,
     duration: "7 days",
     location: "Bali, Indonesia",
@@ -83,7 +83,7 @@ export const tours: Tour[] = [
     title: "Paris Romantic Getaway",
     description:
       "Experience the city of love with your special someone. Visit iconic landmarks, enjoy fine dining, and cruise along the Seine River.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/aris.jpeg",
     price: 1899,
     duration: "5 days",
     location: "Paris, France",
@@ -130,7 +130,7 @@ export const tours: Tour[] = [
     title: "Tokyo Modern Adventure",
     description:
       "Discover the perfect blend of traditional and modern Japan. From ancient temples to cutting-edge technology, experience it all in Tokyo.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/tokyo.jpg",
     price: 2199,
     duration: "8 days",
     location: "Tokyo, Japan",
@@ -189,7 +189,7 @@ export const tours: Tour[] = [
     title: "New York City Explorer",
     description:
       "The city that never sleeps awaits! Experience Broadway shows, world-class museums, and iconic landmarks in the Big Apple.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/ndw ork.jpg",
     price: 1699,
     duration: "6 days",
     location: "New York, USA",
@@ -240,7 +240,7 @@ export const tours: Tour[] = [
     title: "Dubai Luxury Experience",
     description:
       "Indulge in the ultimate luxury experience in Dubai. From world-class shopping to desert safaris, experience the best of the UAE.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/dubai.jpg",
     price: 2499,
     duration: "6 days",
     location: "Dubai, UAE",
@@ -291,7 +291,7 @@ export const tours: Tour[] = [
     title: "Iceland Northern Lights",
     description:
       "Witness the magical Northern Lights and explore Icelands dramatic landscapes. From geysers to glaciers, experience natures wonders.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/icelad.jpeg",
     price: 1799,
     duration: "7 days",
     location: "Reykjavik, Iceland",
@@ -358,7 +358,7 @@ export const testimonials: Testimonial[] = [
     location: "California, USA",
     content:
       "The Bali Cultural Adventure was absolutely incredible! Every detail was perfectly planned, and our guide was knowledgeable and friendly. The temples were breathtaking, and the cooking class was so much fun. I cant wait to book another tour with Wanderlust!",
-    avatar: "/placeholder.svg?height=60&width=60",
+    avatar: "/images/av1.jpeg",
     rating: 5,
   },
   {
@@ -367,7 +367,7 @@ export const testimonials: Testimonial[] = [
     location: "Toronto, Canada",
     content:
       "Tokyo was amazing! The perfect blend of traditional and modern experiences. The sushi making class was a highlight, and seeing Mount Fuji was a dream come true. The organization was flawless, and I felt safe and well-cared for throughout the entire trip.",
-    avatar: "/placeholder.svg?height=60&width=60",
+    avatar: "/images/av2.jpeg",
     rating: 5,
   },
   {
@@ -376,7 +376,7 @@ export const testimonials: Testimonial[] = [
     location: "Madrid, Spain",
     content:
       "Paris exceeded all my expectations! The romantic Seine cruise was magical, and the Eiffel Tower dinner was unforgettable. Our guide made sure we experienced the real Paris, not just the tourist spots. Highly recommend for couples!",
-    avatar: "/placeholder.svg?height=60&width=60",
+    avatar: "/images/av3.jpeg",
     rating: 5,
   },
   {
@@ -385,7 +385,7 @@ export const testimonials: Testimonial[] = [
     location: "London, UK",
     content:
       "The Iceland Northern Lights tour was the adventure of a lifetime! We were lucky to see the aurora on three different nights. The glacier hiking was thrilling, and the Blue Lagoon was so relaxing. Professional guides and excellent accommodations.",
-    avatar: "/placeholder.svg?height=60&width=60",
+    avatar: "/images/v4.jpeg",
     rating: 5,
   },
   {
@@ -394,7 +394,7 @@ export const testimonials: Testimonial[] = [
     location: "Seoul, South Korea",
     content:
       "Dubai was pure luxury from start to finish! The desert safari was exciting, and the yacht cruise was elegant. The attention to detail and personalized service made this trip truly special. Worth every penny!",
-    avatar: "/placeholder.svg?height=60&width=60",
+    avatar: "/images/av5.jpg",
     rating: 5,
   },
 ]

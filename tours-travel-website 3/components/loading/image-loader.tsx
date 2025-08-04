@@ -29,7 +29,7 @@ export function ImageLoader({
   return (
     <div className={`relative ${className}`}>
       {isLoading && (
-        <Skeleton className={`absolute inset-0 ${fill ? "w-full h-full" : `w-[${width}px] h-[${height}px]`}`} />
+        <Skeleton className={`absolute inset-0 rounded-xl ${fill ? "w-full h-full" : `w-[${width}px] h-[${height}px]`}`} />
       )}
 
       {!hasError ? (
@@ -49,7 +49,7 @@ export function ImageLoader({
         />
       ) : (
         <div
-          className={`bg-slate-700/50 flex items-center justify-center ${fill ? "absolute inset-0" : `w-[${width}px] h-[${height}px]`}`}
+          className={`bg-slate-700/50 flex items-center justify-center rounded-xl ${fill ? "absolute inset-0" : `w-[${width}px] h-[${height}px]`}`}
         >
           <span className="text-gray-400 text-sm">Failed to load image</span>
         </div>
