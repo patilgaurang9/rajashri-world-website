@@ -3,21 +3,22 @@ import { TourDetails } from "@/components/tour-details"
 import { tours } from "@/lib/data"
 
 interface TourPageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
-// Mark the page as dynamic
-export const dynamic = "force-dynamic"
-
-export default function TourPage({ params }: TourPageProps) {
-  const { slug } = params
-
-  // Find the tour dynamically at request time
+export default async function TourPage({ params }: TourPageProps) {
+  const { slug } = await params
   const tour = tours.find((t) => t.slug === slug)
 
   if (!tour) {
-    notFound() // shows _not-found page if slug invalid
+    notFound()
   }
 
   return <TourDetails tour={tour} />
+}
+
+export async function generateStaticParams() {
+  return tours.map((tour) => ({
+    slug: tour.slug,
+  }))
 }
