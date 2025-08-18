@@ -9,7 +9,7 @@ import { tours } from "@/lib/data"
 
 function FeaturedToursContent() {
   const [isLoading, setIsLoading] = useState(true)
-  const featuredTours = tours.slice(0, 3)
+  const featuredTours = tours.slice(0, 4)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,9 +32,9 @@ function FeaturedToursContent() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12">
           {isLoading
-            ? Array.from({ length: 3 }).map((_, index) => <TourCardSkeleton key={index} />)
+            ? Array.from({ length: 4 }).map((_, index) => <TourCardSkeleton key={index} />)
             : featuredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
         </div>
 

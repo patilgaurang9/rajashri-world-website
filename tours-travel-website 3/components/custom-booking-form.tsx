@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -50,8 +51,18 @@ export function CustomBookingForm() {
   }
 
   return (
-    <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
-      <CardHeader>
+    <Card className="bg-white border-gray-200 shadow-lg rounded-2xl overflow-hidden">
+      <div className="relative w-full h-40 md:h-56 mb-4">
+        <Image
+          src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
+          alt="Travel inspiration"
+          fill
+          className="object-cover w-full h-full"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-2xl" />
+      </div>
+      <CardHeader className="pt-0">
         <CardTitle className="text-2xl font-bold text-gray-900">Create Your Custom Tour</CardTitle>
       </CardHeader>
       <CardContent>

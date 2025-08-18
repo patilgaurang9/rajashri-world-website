@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { AuthModal } from "@/components/auth-modal"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
@@ -18,6 +19,7 @@ const navigation = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -29,91 +31,89 @@ export function Navbar() {
   }, [])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
-              <div className="container mx-auto px-4 pt-4">
-          <div className="flex items-center justify-between h-16">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-200`}>
+      {/* Orange accent bar */}
+      <div className="w-full h-1 bg-orange-500" />
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
           {/* Logo - Left */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex items-center space-x-2 group">
               <Image
                 src="/images/WhatsApp_Image_2025-08-04_at_18.03.33_50e467a4-removebg-preview.png"
                 alt="Wanderlust Tours Logo"
-                width={200}
-                height={67}
-                className="h-12 w-auto"
+                width={180}
+                height={60}
+                className="h-14 w-auto transition-transform group-hover:scale-105"
+                priority
               />
             </Link>
           </div>
 
           {/* Desktop Navigation - Center */}
-          <div className="hidden md:flex items-center absolute left-1/2 transform -translate-x-1/2">
-            <div className={`bg-white/90 backdrop-blur-md rounded-full px-8 py-3 shadow-lg border border-white/30 transition-all duration-300 ${
-              isScrolled ? "bg-white/95" : "bg-white/80"
-            }`}>
-              <div className="flex items-center space-x-12">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`text-base font-medium transition-colors ${
-                      pathname === item.href 
-                        ? "text-orange-600" 
-                        : "text-gray-900 hover:text-orange-600"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
+          <div className="hidden md:flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-10">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`relative text-base font-semibold tracking-wide px-2 py-1 transition-colors duration-200 ${
+                  pathname === item.href
+                    ? "text-orange-600"
+                    : "text-gray-900 hover:text-orange-600"
+                } group`}
+              >
+                <span>{item.name}</span>
+                <span className={`absolute left-0 -bottom-1 w-full h-0.5 rounded bg-orange-500 transition-all duration-300 ${pathname === item.href ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'}`}></span>
+              </Link>
+            ))}
           </div>
 
-          {/* Book Now Button - Right */}
+          {/* Login Button - Right */}
           <div className="hidden md:flex">
             <Button
-              asChild
               size="lg"
-              className="bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 py-2 text-base font-medium shadow-lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 py-2 text-base font-semibold shadow transition-colors"
+              onClick={() => setAuthOpen(true)}
             >
-              <Link href="/book">Book Now</Link>
+              Login
             </Button>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="text-white hover:text-orange-300">
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300">
+              {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
             </Button>
           </div>
         </div>
 
                   {/* Mobile Navigation */}
           {isOpen && (
-            <div className="md:hidden bg-black/90 backdrop-blur-md border-t border-white/20 shadow-lg">
-              <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="md:hidden bg-white/95 border-t border-gray-200 shadow-lg animate-fadeIn">
+              <div className="px-4 pt-4 pb-4 space-y-2">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`block px-3 py-2 text-base font-medium transition-colors hover:text-orange-300 ${
-                      pathname === item.href ? "text-orange-400" : "text-white"
+                    className={`block px-3 py-3 rounded-lg text-base font-semibold transition-colors duration-200 ${
+                      pathname === item.href ? "text-orange-600 bg-orange-50" : "text-gray-900 hover:text-orange-600 hover:bg-orange-50"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
-                <div className="px-3 py-2">
-                  <Button asChild className="w-full bg-white text-gray-900 hover:bg-gray-100 rounded-full">
-                    <Link href="/book" onClick={() => setIsOpen(false)}>
-                      Book Now
-                    </Link>
+                <div className="pt-2">
+                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full text-base font-semibold" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
+                    Login
                   </Button>
                 </div>
               </div>
             </div>
           )}
       </div>
+      {/* Auth Modal */}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </nav>
   )
 }

@@ -15,14 +15,11 @@ export default function ToursPage() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <ToursFilters />
-          </div>
-          <div className="lg:col-span-3">
-            <ToursGrid tours={tours} />
-          </div>
+        {/* Horizontal Filters */}
+        <div className="mb-8">
+          <ToursFilters />
         </div>
+        <ToursGrid tours={tours} />
       </div>
     </div>
   )
