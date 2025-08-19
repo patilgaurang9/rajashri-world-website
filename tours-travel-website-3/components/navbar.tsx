@@ -42,8 +42,8 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Only fetch user initial after loading is false and authenticated
-  const [userInitial, setUserInitial] = useState('U');
+  // Only fetch user initial if authenticated, else clear it
+  const [userInitial, setUserInitial] = useState('');
   useEffect(() => {
     if (!loading && isAuthenticated) {
       fetch('/api/auth/me', { credentials: 'include' })
@@ -52,20 +52,19 @@ export function Navbar() {
           if (data && data.email) {
             setUserInitial(data.email[0].toUpperCase());
           } else {
-            setUserInitial('U');
+            setUserInitial('');
           }
         })
-        .catch(() => setUserInitial('U'));
-    }
-    if (!loading && !isAuthenticated) {
-      setUserInitial('U');
+        .catch(() => setUserInitial(''));
+    } else if (!loading && !isAuthenticated) {
+      setUserInitial('');
     }
   }, [isAuthenticated, loading]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setProfileOpen(false);
-    setUserInitial('U'); // Reset user initial after logout
+    setUserInitial(''); // Reset user initial after logout
     // Dispatch a custom event so Navbar updates immediately
     window.dispatchEvent(new Event("auth-changed"));
   };
@@ -120,7 +119,7 @@ export function Navbar() {
                 Login
               </Button>
             )}
-            {!loading && isAuthenticated && (
+            {!loading && isAuthenticated && userInitial && (
               <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center justify-center focus:outline-none">

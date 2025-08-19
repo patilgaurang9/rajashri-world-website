@@ -11,14 +11,15 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Activate new SW immediately
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache')
         return cache.addAll(urlsToCache)
       })
-  )
-})
+  );
+});
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
@@ -56,18 +57,21 @@ self.addEventListener('fetch', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    (async () => {
+      // Claim clients immediately so new SW controls all pages
+      await self.clients.claim();
+      const cacheNames = await caches.keys();
+      await Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName)
-            return caches.delete(cacheName)
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
           }
         })
-      )
-    })
-  )
-})
+      );
+    })()
+  );
+});
 
 // Background sync for offline actions
 self.addEventListener('sync', (event) => {
