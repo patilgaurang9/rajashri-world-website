@@ -65,6 +65,11 @@ export function Navbar() {
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setProfileOpen(false);
     setUserInitial(''); // Reset user initial after logout
+    // Clear all frontend state
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
     // Dispatch a custom event so Navbar updates immediately
     window.dispatchEvent(new Event("auth-changed"));
   };

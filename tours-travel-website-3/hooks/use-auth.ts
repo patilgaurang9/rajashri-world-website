@@ -10,7 +10,7 @@ export function useAuth() {
   const checkAuth = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/me", { credentials: "include" });
+  const res = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
       setIsAuthenticated(res.ok);
     } catch {
       setIsAuthenticated(false);
