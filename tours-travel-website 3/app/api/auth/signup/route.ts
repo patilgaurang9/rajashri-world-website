@@ -1,5 +1,3 @@
-// DEBUG: Log the service role key (do not keep in production)
-console.log('SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 8) + '...');
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { z } from 'zod';
