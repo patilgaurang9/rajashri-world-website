@@ -65,6 +65,7 @@ export function Navbar() {
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setProfileOpen(false);
+    setUserInitial('U'); // Reset user initial after logout
     // Dispatch a custom event so Navbar updates immediately
     window.dispatchEvent(new Event("auth-changed"));
   };
