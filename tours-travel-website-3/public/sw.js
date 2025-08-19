@@ -22,39 +22,36 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests for caching
+  if (event.request.method !== 'GET') {
+    return;
+  }
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
         if (response) {
-          return response
+          return response;
         }
         return fetch(event.request)
           .then((response) => {
-            // Check if we received a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response
+              return response;
             }
-
-            // Clone the response
-            const responseToCache = response.clone()
-
+            const responseToCache = response.clone();
             caches.open(CACHE_NAME)
               .then((cache) => {
-                cache.put(event.request, responseToCache)
-              })
-
-            return response
+                cache.put(event.request, responseToCache);
+              });
+            return response;
           })
           .catch(() => {
-            // Return offline page for navigation requests
             if (event.request.mode === 'navigate') {
-              return caches.match('/offline.html')
+              return caches.match('/offline.html');
             }
-          })
+          });
       })
-  )
-})
+  );
+});
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
