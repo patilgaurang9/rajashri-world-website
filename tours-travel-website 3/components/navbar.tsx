@@ -1,6 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useAuth } from "@/hooks/use-auth"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 import { AuthModal } from "@/components/auth-modal"
 import Link from "next/link"
 import Image from "next/image"
@@ -20,7 +29,10 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const pathname = usePathname()
+  // Use the custom hook to get auth state (does not expose JWT)
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +41,33 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Only fetch user initial after loading is false and authenticated
+  const [userInitial, setUserInitial] = useState('U');
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      fetch('/api/auth/me', { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.email) {
+            setUserInitial(data.email[0].toUpperCase());
+          } else {
+            setUserInitial('U');
+          }
+        })
+        .catch(() => setUserInitial('U'));
+    }
+    if (!loading && !isAuthenticated) {
+      setUserInitial('U');
+    }
+  }, [isAuthenticated, loading]);
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    setProfileOpen(false);
+    // Dispatch a custom event so Navbar updates immediately
+    window.dispatchEvent(new Event("auth-changed"));
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-200`}>
@@ -68,15 +107,32 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Login Button - Right */}
+          {/* Auth/Profile Button - Right */}
           <div className="hidden md:flex">
-            <Button
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 py-2 text-base font-semibold shadow transition-colors"
-              onClick={() => setAuthOpen(true)}
-            >
-              Login
-            </Button>
+            {/* Show Login/Signup if not authenticated, else show Profile dropdown */}
+            {!loading && !isAuthenticated && (
+              <Button
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 py-2 text-base font-semibold shadow transition-colors"
+                onClick={() => setAuthOpen(true)}
+              >
+                Login
+              </Button>
+            )}
+            {!loading && isAuthenticated && (
+              <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center justify-center focus:outline-none">
+                    <Avatar>
+                      <AvatarFallback className="bg-orange-500 text-white font-bold">{userInitial}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -104,16 +160,33 @@ export function Navbar() {
                   </Link>
                 ))}
                 <div className="pt-2">
-                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full text-base font-semibold" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
-                    Login
-                  </Button>
+                  {!loading && !isAuthenticated && (
+                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full text-base font-semibold" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
+                      Login / Signup
+                    </Button>
+                  )}
+                  {!loading && isAuthenticated && (
+                    <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
+                      <DropdownMenuTrigger asChild>
+                        <button className="flex items-center justify-center w-full focus:outline-none">
+                          <Avatar>
+                            <AvatarFallback className="bg-orange-500 text-white font-bold">{userInitial}</AvatarFallback>
+                          </Avatar>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               </div>
             </div>
           )}
       </div>
       {/* Auth Modal */}
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+  {/* AuthModal opens for login/signup, closes on success or cancel */}
+  <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </nav>
   )
 }
