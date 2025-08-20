@@ -23,6 +23,10 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
+  // Never cache or intercept /api/auth/me or any auth endpoint
+  if (event.request.url.includes('/api/auth/me')) {
+    return; // Let the network handle it, do not cache
+  }
   // Only handle GET requests for caching
   if (event.request.method !== 'GET') {
     return;
@@ -62,7 +66,14 @@ self.addEventListener('activate', (event) => {
       await self.clients.claim();
       const cacheNames = await caches.keys();
       await Promise.all(
-        cacheNames.map((cacheName) => {
+        cacheNames.map(async (cacheName) => {
+          const cache = await caches.open(cacheName);
+          const keys = await cache.keys();
+          await Promise.all(
+            keys
+              .filter(request => request.url.includes('/api/auth/me'))
+              .map(request => cache.delete(request))
+          );
           if (cacheName !== CACHE_NAME) {
             console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
