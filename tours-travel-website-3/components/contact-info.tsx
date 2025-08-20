@@ -12,7 +12,7 @@ export function ContactInfo() {
               <MapPin className="h-5 w-5 text-orange-500 mt-1" />
               <div>
                 <div className="font-medium text-gray-900">Address</div>
-                <div className="text-gray-600">123 Travel Street, Adventure City, AC 12345</div>
+                <div className="text-gray-600">Mumbai, Maharashtra, India</div>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -49,7 +49,7 @@ export function ContactInfo() {
           <h3 className="text-xl font-bold mb-4 text-gray-900">Find Us</h3>
           <div className="aspect-video bg-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1234567890123!2d-74.0059413!3d40.7127753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQyJzQ2LjAiTiA3NMKwMDAnMjEuNCJX!5e0!3m2!1sen!2sus!4v1234567890123"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.745672660584!2d72.97225947714955!3d19.206307547864977!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b93ed9da3325%3A0x4af7c318c883767e!2sMahaveer%20Milestone!5e0!3m2!1sen!2sin!4v1755670171866!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
