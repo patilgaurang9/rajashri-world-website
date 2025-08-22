@@ -1,23 +1,33 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { TourCard } from "@/components/tour-card"
-import { TourCardSkeleton } from "@/components/loading/tour-card-skeleton"
-import { tours } from "@/lib/data"
+import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { TourCard } from "@/components/tour-card";
+import { TourCardSkeleton } from "@/components/loading/tour-card-skeleton";
+import { supabase } from "@/lib/supabaseClient";
 
 function FeaturedToursContent() {
-  const [isLoading, setIsLoading] = useState(true)
-  const featuredTours = tours.slice(0, 4)
+  const [isLoading, setIsLoading] = useState(true);
+  const [featuredTours, setFeaturedTours] = useState<any[]>([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 800) // Reduced loading time for better UX
-
-    return () => clearTimeout(timer)
-  }, [])
+    let isMounted = true;
+    async function fetchFeaturedTours() {
+      setIsLoading(true);
+      // You can change the query to use a 'featured' boolean or order by rating, etc.
+      const { data, error } = await supabase
+        .from('tours')
+        .select('*')
+        .limit(4);
+      if (!error && isMounted) {
+        setFeaturedTours(data || []);
+      }
+      setIsLoading(false);
+    }
+    fetchFeaturedTours();
+    return () => { isMounted = false; };
+  }, []);
 
   return (
     <section className="py-16 sm:py-20 bg-white">
@@ -33,9 +43,13 @@ function FeaturedToursContent() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, index) => <TourCardSkeleton key={index} />)
-            : featuredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, index) => <TourCardSkeleton key={index} />)
+          ) : featuredTours.length > 0 ? (
+            featuredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
+          ) : (
+            <div className="col-span-4 text-center text-gray-500 text-lg py-12">No featured tours available at the moment.</div>
+          )}
         </div>
 
         <div className="text-center">
@@ -50,7 +64,7 @@ function FeaturedToursContent() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 export function FeaturedTours() {

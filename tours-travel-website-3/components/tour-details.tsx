@@ -4,16 +4,14 @@ import Link from "next/link"
 import { Calendar, MapPin, Users, Star, Clock, CheckCircle, X, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import type { Tour } from "@/lib/data"
-import { useState } from "react"
+import { useState } from "react";
 
 interface TourDetailsProps {
-  tour: Tour
+  tour: any;
 }
 
 export function TourDetails({ tour }: TourDetailsProps) {
-  // Placeholder gallery images (replace with real tour.gallery if available)
-  const gallery = [tour.image, "/images/placeholder.jpg", "/images/placeholder-user.jpg"];
+  const gallery = Array.isArray(tour.gallery) ? tour.gallery : [];
   const [openDays, setOpenDays] = useState<number[]>([]);
   const toggleDay = (idx: number) => {
     setOpenDays((prev) =>
@@ -22,40 +20,49 @@ export function TourDetails({ tour }: TourDetailsProps) {
   };
   return (
     <div className="min-h-screen pt-20 pb-16 bg-white">
-      {/* Hero Section (image spans up to cards, more rounded) */}
+      {/* Hero Section */}
       <div className="container mx-auto px-4">
         <div className="relative w-full h-[420px] md:h-[520px] flex items-end rounded-3xl overflow-hidden mb-10 shadow-lg" style={{maxWidth:'100%'}}>
-          <Image src={tour.image || "/placeholder.svg"} alt={tour.title} fill className="object-cover" style={{objectPosition:'center'}} />
+          <Image src={gallery[0] || "/placeholder.svg"} alt={tour.title} fill className="object-cover" style={{objectPosition:'center'}} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
           <div className="relative z-10 p-8 w-full flex flex-col md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">{tour.title}</h1>
               <div className="flex flex-wrap items-center gap-4 text-white/90 mb-2">
                 <span className="flex items-center gap-1"><MapPin className="h-5 w-5" />{tour.location}</span>
-                <span className="flex items-center gap-1"><Star className="h-5 w-5 fill-orange-500 text-orange-500" />{tour.rating} <span className="text-xs">({tour.reviews} reviews)</span></span>
-                <span className="flex items-center gap-1"><Calendar className="h-5 w-5" />{tour.duration}</span>
+                <span className="flex items-center gap-1"><Calendar className="h-5 w-5" />{tour.duration_nights}N/{tour.duration_days}D</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-3 gap-10">
           {/* Main Content (left) */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Tour Details Card - styled like reference image */}
+            {/* Duration & Inclusions Breakdown */}
             <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
               <CardContent className="p-6">
-                {/* Duration pill and city breakdown */}
-                <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <span className="bg-orange-600 text-white font-semibold rounded-full px-4 py-1 text-lg">{tour.duration}</span>
-                  {/* Example city breakdown, replace with dynamic if available */}
-                  <span className="text-gray-700 text-sm"><span className="font-bold">2</span> Days in <span className="font-semibold">Copenhagen</span></span>
-                  <span className="text-gray-700 text-sm"><span className="font-bold">1</span> Day in <span className="font-semibold">Geilo</span></span>
-                  <span className="text-gray-700 text-sm"><span className="font-bold">1</span> Day in <span className="font-semibold">Oslo</span></span>
-                  <span className="text-gray-700 text-sm"><span className="font-bold">3</span> Days in <span className="font-semibold">Stockholm</span></span>
-                  <span className="text-gray-700 text-sm"><span className="font-bold">2</span> Days in <span className="font-semibold">Helsinki</span></span>
+                <div className="flex items-center mb-4 gap-4">
+                  <span className="bg-orange-700 text-white font-bold rounded px-4 py-1 text-lg" style={{letterSpacing: '1px'}}>{tour.duration_days}D/{tour.duration_nights}N</span>
+                  {Array.isArray(tour.days_breakdown) && tour.days_breakdown.length > 0 && (
+                    <div className="flex items-center gap-0">
+                      {tour.days_breakdown.map((item: any, idx: number) => (
+                        <div key={idx} className="flex items-center">
+                          {idx !== 0 && <span className="h-6 border-l border-gray-300 mx-3" />}
+                          <span className="flex flex-col items-center min-w-[70px]">
+                            <span className="font-extrabold text-2xl text-gray-400 leading-none">{item.days}</span>
+                            <span className="text-[11px] text-gray-400 font-semibold leading-none">{item.days === 1 ? 'Day' : 'Days'} in</span>
+                            <span className="font-extrabold text-base text-gray-700 leading-none">{item.city}</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex-1" />
+                  {tour.brochure_url && (
+                    <a href={tour.brochure_url} download className="inline-block bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-full px-4 py-2 text-sm shadow transition-all whitespace-nowrap ml-auto">Download Brochure</a>
+                  )}
                 </div>
                 <hr className="my-4" />
                 {/* Included features row */}
@@ -65,74 +72,67 @@ export function TourDetails({ tour }: TourDetailsProps) {
                   <div className="flex items-center gap-2"><span className="inline-block"><svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 17l4-4 4 4m0 0V3m0 14H4' /></svg></span>Breakfast Included</div>
                   <div className="flex items-center gap-2"><span className="inline-block"><svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><circle cx='12' cy='12' r='10' /><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 12h4l2 2' /></svg></span>Sightseeing Included</div>
                 </div>
+          
               </CardContent>
             </Card>
-
-            {/* Trip Highlights */}
-            <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Trip Highlights</h2>
-                <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                  <li>Explore the beauty of northern Europe with cozy towns, snowy adventures, peaceful lakes, and stunning landscapes all year round.</li>
-                  <li>Soar up the Ericsson Globe on the SkyView Gondola and take in stunning 360° views of Stockholm’s skyline and beyond.</li>
-                  <li>Visit the historic Olympic Stadium, the heart of Finnish sports, and see where the 1952 Olympics brought global attention to Helsinki.</li>
-                  <li>Wander through Tivoli Gardens, where vintage rides, lush gardens, and live performances create a magical atmosphere day and night.</li>
-                  <li>Discover Vigeland Sculpture Park, the world’s largest sculpture park by a single artist, filled with powerful human figures that capture life & emotion.</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Itinerary - collapsible */}
-            <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Itinerary</h2>
-                <div className="space-y-2">
-                  {tour.itinerary.map((day, index) => {
-                    const open = openDays.includes(index);
-                    return (
-                      <div key={index} className="border-b last:border-b-0">
-                        <button
-                          className="w-full flex items-center gap-4 py-3 focus:outline-none"
-                          onClick={() => toggleDay(index)}
-                          aria-expanded={open}
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                            <span className="leading-none">Day<br />{index + 1}</span>
-                          </div>
-                          <span className="flex-1 text-left font-semibold text-gray-900">{day.title}</span>
-                          {open ? (
-                            <ChevronUp className="w-5 h-5 text-orange-500" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-orange-500" />
+            {/* Highlights */}
+            {Array.isArray(tour.highlights) && tour.highlights.length > 0 && (
+              <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-bold mb-4 text-gray-900">Trip Highlights</h2>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                    {tour.highlights.map((h: string, i: number) => <li key={i}>{h}</li>)}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+            {/* Itinerary */}
+            {Array.isArray(tour.itinerary) && tour.itinerary.length > 0 && (
+              <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-bold mb-4 text-gray-900">Itinerary</h2>
+                  <div className="space-y-2">
+                    {tour.itinerary.map((day: any, index: number) => {
+                      const open = openDays.includes(index);
+                      return (
+                        <div key={index} className="border-b last:border-b-0">
+                          <button
+                            className="w-full flex items-center gap-4 py-3 focus:outline-none"
+                            onClick={() => toggleDay(index)}
+                            aria-expanded={open}
+                          >
+                            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                              <span className="leading-none">Day<br />{index + 1}</span>
+                            </div>
+                            <span className="flex-1 text-left font-semibold text-gray-900">{day.title}</span>
+                            {open ? (
+                              <ChevronUp className="w-5 h-5 text-orange-500" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5 text-orange-500" />
+                            )}
+                          </button>
+                          {open && (
+                            <div className="pl-14 pb-4 pr-2">
+                              {day.date && <div className="text-xs text-gray-500 mb-1">{day.date}</div>}
+                              <p className="text-gray-600 mb-2 font-semibold">{day.title}</p>
+                              <p className="text-gray-600 mb-2">{day.description}</p>
+                              {day.hotel && <div className="text-xs text-gray-500">Hotel: {day.hotel}</div>}
+                            </div>
                           )}
-                        </button>
-                        {open && (
-                          <div className="pl-14 pb-4 pr-2">
-                            <p className="text-gray-600 mb-2">{day.description}</p>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Overview */}
-            <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
-                <p className="text-gray-700 leading-relaxed">{tour.description}</p>
-              </CardContent>
-            </Card>
-
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             {/* Inclusions/Exclusions */}
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
                 <CardContent className="p-6">
                   <h2 className="text-xl font-bold mb-4 text-gray-900">What's Included</h2>
                   <ul className="space-y-2">
-                    {tour.inclusions.map((inclusion, index) => (
+                    {Array.isArray(tour.inclusions) && tour.inclusions.map((inclusion: string, index: number) => (
                       <li key={index} className="flex items-center gap-2 text-gray-700">
                         <CheckCircle className="h-5 w-5 text-green-500" />
                         <span>{inclusion}</span>
@@ -145,53 +145,72 @@ export function TourDetails({ tour }: TourDetailsProps) {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-bold mb-4 text-gray-900">What's Not Included</h2>
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />Personal expenses</li>
-                    <li className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />Meals not mentioned in inclusions</li>
-                    <li className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />International flight tickets</li>
-                    <li className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />Travel insurance</li>
+                    {Array.isArray(tour.exclusions) && tour.exclusions.length > 0 ? (
+                      tour.exclusions.map((ex: string, i: number) => (
+                        <li key={i} className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />{ex}</li>
+                      ))
+                    ) : (
+                      <li className="flex items-center gap-2 text-gray-700"><X className="h-5 w-5 text-red-400" />No exclusions listed</li>
+                    )}
                   </ul>
                 </CardContent>
               </Card>
             </div>
-
-            {/* FAQs/Know Before You Go */}
+            {/* Know Before You Go */}
+            {Array.isArray(tour.know_before_you_go) && tour.know_before_you_go.length > 0 && (
+              <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-bold mb-4 text-gray-900">Know Before You Go</h2>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                    {tour.know_before_you_go.map((k: string, i: number) => <li key={i}>{k}</li>)}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+            {/* Overview */}
             <Card className="bg-white border border-gray-100 shadow-sm rounded-3xl">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Know Before You Go</h2>
-                <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                  <li>Carry valid ID and travel documents at all times.</li>
-                  <li>Check visa requirements for all countries visited.</li>
-                  <li>Weather can be unpredictable; pack accordingly.</li>
-                  <li>Follow local COVID-19 guidelines and restrictions.</li>
-                  <li>Read the cancellation and refund policy before booking.</li>
-                </ul>
+                <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
+                <p className="text-gray-700 leading-relaxed">{tour.description}</p>
               </CardContent>
             </Card>
           </div>
-
           {/* Sidebar (right) */}
           <div className="space-y-6">
-            {/* Booking Card with only price (black), more rounded */}
-            <Card className="bg-white border border-gray-100 shadow sticky top-24 rounded-3xl">
-              <CardContent className="p-6">
-                <div className="text-center mb-6">
-                  <div className="text-3xl font-bold text-black mb-2">INR {tour.price.toLocaleString("en-IN")}</div>
-                  <div className="text-gray-600">per person</div>
+            <Card className="bg-white border border-gray-100 shadow-sm sticky top-24 rounded-3xl">
+              <CardContent className="p-8 flex flex-col gap-4">
+                <div className="text-gray-800 font-semibold text-base mb-1 truncate" title={tour.title}>{tour.title}</div>
+                <div className="flex flex-col gap-1 mb-2 w-full">
+                  {tour.price_without_flight != null && (
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-gray-500 text-sm">Without Flight</span>
+                      <span className="text-lg font-bold text-black">₹ {Number(tour.price_without_flight).toLocaleString("en-IN")}</span>
+                    </div>
+                  )}
+                  {tour.price_with_flight != null && (
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-gray-500 text-sm">With Travel</span>
+                      <span className="text-lg font-bold text-black">₹ {Number(tour.price_with_flight).toLocaleString("en-IN")}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="mb-4">
-                  <input type="number" placeholder="Enter phone number" className="w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-base mb-2" />
-                </div>
-                <div className="flex gap-2">
-                  <button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white p-3 shadow flex items-center justify-center" title="Call">
-                    <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.515l.3 1.2a2 2 0 01-.45 1.95l-.91.91a16.001 16.001 0 006.586 6.586l.91-.91a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.163 23 1 16.837 1 9V8a2 2 0 012-2z' /></svg>
-                  </button>
-                  <Button className="flex-1 rounded-full border border-orange-500 text-orange-600 bg-white hover:bg-orange-50 text-lg py-3 shadow">Send Enquiry</Button>
-                </div>
+                <form className="flex flex-col gap-3 w-full">
+                  <input type="text" placeholder="Full Name*" required className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-base" />
+                  <input type="email" placeholder="Email*" required className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-base" />
+                  <div className="flex gap-2">
+                    <select className="rounded-xl border border-gray-200 px-2 py-3 text-base bg-white" defaultValue="+91">
+                      <option value="+91">+91</option>
+                      {/* Add more country codes as needed */}
+                    </select>
+                    <input type="tel" placeholder="Your Phone*" required className="flex-1 rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-base" />
+                  </div>
+                  <Button className="w-full rounded-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-3 shadow transition-all mt-2">Send Enquiry</Button>
+                </form>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

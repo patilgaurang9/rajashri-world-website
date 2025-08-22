@@ -55,7 +55,7 @@ export function HeroSection() {
           create memories that last a lifetime.
         </p>
 
-        {/* Search Bar */}
+        {/* Search Bar
         <div className="mb-6 sm:mb-8 max-w-full sm:max-w-3xl mx-auto p-2 sm:p-3 rounded-2xl border border-white/30 bg-white/20 backdrop-blur-md flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
@@ -81,7 +81,7 @@ export function HeroSection() {
           >
             Search
           </Button>
-        </div>
+        </div> */}
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
           <Button

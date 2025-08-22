@@ -1,8 +1,9 @@
-import { ToursGrid } from "@/components/tours-grid"
-import { ToursFilters } from "@/components/tours-filters"
-import { tours } from "@/lib/data"
+import { ToursGrid } from "@/components/tours-grid";
+import { ToursFilters } from "@/components/tours-filters";
+import { supabase } from "@/lib/supabaseClient";
 
-export default function ToursPage() {
+export default async function ToursPage() {
+  const { data: tours, error } = await supabase.from('tours').select('*').order('start_date', { ascending: true });
   return (
     <div className="min-h-screen pt-20 pb-16 bg-white">
       <div className="container mx-auto px-4">
@@ -14,13 +15,11 @@ export default function ToursPage() {
             Discover amazing destinations and create unforgettable memories with our carefully curated tours
           </p>
         </div>
-
-        {/* Horizontal Filters */}
         <div className="mb-8">
           <ToursFilters />
         </div>
-        <ToursGrid tours={tours} />
+        <ToursGrid tours={tours || []} />
       </div>
     </div>
-  )
+  );
 }

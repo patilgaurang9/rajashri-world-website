@@ -1,24 +1,17 @@
-import { notFound } from "next/navigation"
-import { TourDetails } from "@/components/tour-details"
-import { tours } from "@/lib/data"
+import { notFound } from "next/navigation";
+import { TourDetails } from "@/components/tour-details";
+import { supabase } from "@/lib/supabaseClient";
 
 interface TourPageProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string };
 }
 
-export default async function TourPage({ params }: TourPageProps) {
-  const { slug } = await params
-  const tour = tours.find((t) => t.slug === slug)
-
-  if (!tour) {
-    notFound()
+export default async function TourPage(props: TourPageProps) {
+  const params = await props.params;
+  const { slug } = params;
+  const { data: tour, error } = await supabase.from('tours').select('*').eq('slug', slug).single();
+  if (error || !tour) {
+    notFound();
   }
-
-  return <TourDetails tour={tour} />
-}
-
-export async function generateStaticParams() {
-  return tours.map((tour) => ({
-    slug: tour.slug,
-  }))
+  return <TourDetails tour={tour} />;
 }
