@@ -16,43 +16,43 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Wanderlust Tours - Discover Amazing Destinations",
-    template: "%s | Wanderlust Tours"
+    default: "Rajashri World - Tours, Travel & Experiences in India",
+    template: "%s | Rajashri World"
   },
-  description: "Explore the world with our curated tours and travel experiences. Book your dream vacation today with expert guides and unforgettable adventures.",
-  keywords: ["tours", "travel", "vacation", "booking", "destinations", "adventure", "luxury travel", "cultural tours"],
-  authors: [{ name: "Wanderlust Tours" }],
-  creator: "Wanderlust Tours",
-  publisher: "Wanderlust Tours",
+  description: "Rajashri World offers curated tours, travel packages, and unique experiences across India. Discover, book, and explore with trusted guides and local expertise.",
+  keywords: ["rajashri world", "tours", "travel", "india", "vacation", "booking", "experiences", "adventure", "cultural tours", "holiday"],
+  authors: [{ name: "Rajashri World" }],
+  creator: "Rajashri World",
+  publisher: "Rajashri World",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://wanderlust-tours.com'),
+  metadataBase: new URL('https://rajashriworld.com'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://rajashriworld.com/',
   },
   openGraph: {
-    title: "Wanderlust Tours - Discover Amazing Destinations",
-    description: "Explore the world with our curated tours and travel experiences.",
-    url: 'https://wanderlust-tours.com',
-    siteName: 'Wanderlust Tours',
+    title: "Rajashri World - Tours, Travel & Experiences in India",
+    description: "Rajashri World offers curated tours, travel packages, and unique experiences across India.",
+    url: 'https://rajashriworld.com',
+    siteName: 'Rajashri World',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Wanderlust Tours - Discover the World',
+        alt: 'Rajashri World - Tours & Travel',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_IN',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wanderlust Tours - Discover Amazing Destinations',
-    description: 'Explore the world with our curated tours and travel experiences.',
+    title: 'Rajashri World - Tours, Travel & Experiences in India',
+    description: 'Rajashri World offers curated tours, travel packages, and unique experiences across India.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -89,6 +89,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
+      <head>
+        <Script id="ld-json" type="application/ld+json" strategy="afterInteractive">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "TravelAgency",
+              "name": "Rajashri World",
+              "url": "https://rajashriworld.com",
+              "logo": "https://rajashriworld.com/og-image.jpg",
+              "description": "Rajashri World offers curated tours, travel packages, and unique experiences across India.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Mumbai",
+                "addressRegion": "Maharashtra",
+                "addressCountry": "India"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+91-1234567890",
+                "contactType": "customer service"
+              }
+            }
+          `}
+        </Script>
+      </head>
       <body className="bg-white text-gray-900 antialiased" suppressHydrationWarning>
         <Navbar />
         <main className="min-h-screen">{children}</main>
