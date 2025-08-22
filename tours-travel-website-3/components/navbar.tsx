@@ -75,8 +75,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-200`}>
-      {/* Orange accent bar */}
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-200`} role="navigation" aria-label="Main Navigation">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo - Left */}
@@ -140,52 +139,95 @@ export function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300">
-              {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+          <div className="md:hidden flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+            >
+              {isOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
             </Button>
           </div>
         </div>
 
                   {/* Mobile Navigation */}
           {isOpen && (
-            <div className="md:hidden bg-white/95 border-t border-gray-200 shadow-lg animate-fadeIn">
-              <div className="px-4 pt-4 pb-4 space-y-2">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`block px-3 py-3 rounded-lg text-base font-semibold transition-colors duration-200 ${
-                      pathname === item.href ? "text-orange-600 bg-orange-50" : "text-gray-900 hover:text-orange-600 hover:bg-orange-50"
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
+            <>
+              {/* Backdrop for focus and accessibility */}
+              <div
+                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
+                aria-hidden="true"
+                onClick={() => setIsOpen(false)}
+              />
+              <div
+                id="mobile-menu"
+                className="fixed top-0 left-0 right-0 z-50 md:hidden bg-white border-b border-gray-200 shadow-lg animate-fadeIn w-full"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100">
+                  <Link href="/" className="flex items-center space-x-2" tabIndex={0} aria-label="Home">
+                    <Image
+                      src="/images/WhatsApp_Image_2025-08-04_at_18.03.33_50e467a4-removebg-preview.png"
+                      alt="Wanderlust Tours Logo"
+                      width={140}
+                      height={40}
+                      className="h-10 w-auto"
+                      priority
+                    />
                   </Link>
-                ))}
-                <div className="pt-2">
-                  {!loading && !isAuthenticated && (
-                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full text-base font-semibold" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
-                      Login / Signup
-                    </Button>
-                  )}
-                  {!loading && isAuthenticated && (
-                    <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
-                      <DropdownMenuTrigger asChild>
-                        <button className="flex items-center justify-center w-full focus:outline-none">
-                          <Avatar>
-                            <AvatarFallback className="bg-orange-500 text-white font-bold">{userInitial}</AvatarFallback>
-                          </Avatar>
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Close menu"
+                    onClick={() => setIsOpen(false)}
+                    className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+                  >
+                    <X className="h-8 w-8" />
+                  </Button>
+                </div>
+                <div className="px-4 pt-2 pb-6 space-y-2">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`block w-full px-4 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 text-left focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                        pathname === item.href ? "text-orange-600 bg-orange-50" : "text-gray-900 hover:text-orange-600 hover:bg-orange-50"
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                      tabIndex={0}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <div className="pt-2">
+                    {!loading && !isAuthenticated && (
+                      <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full text-lg font-semibold py-3" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
+                        Login / Signup
+                      </Button>
+                    )}
+                    {!loading && isAuthenticated && (
+                      <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex items-center justify-center w-full focus:outline-none">
+                            <Avatar>
+                              <AvatarFallback className="bg-orange-500 text-white font-bold">{userInitial}</AvatarFallback>
+                            </Avatar>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
       </div>
       {/* Auth Modal */}
