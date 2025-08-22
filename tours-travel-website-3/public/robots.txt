@@ -1,13 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://wanderlust-tours.com/sitemap.xml
+# Host
+Host: https://rajashriworld.com
 
-# Crawl-delay
-Crawl-delay: 1
-
-# Disallow admin and private areas
-Disallow: /api/
-Disallow: /admin/
-Disallow: /private/ 
+# Sitemaps
+Sitemap: https://rajashriworld.com/sitemap.xml
