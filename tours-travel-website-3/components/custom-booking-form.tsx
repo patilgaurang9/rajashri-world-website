@@ -1,80 +1,106 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
+import { CheckCircle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+
 
 export function CustomBookingForm() {
+  const [step, setStep] = useState(1)
   const [budget, setBudget] = useState([1000])
-  const [activities, setActivities] = useState<string[]>([])
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleActivityChange = (activity: string, checked: boolean) => {
-    if (checked) {
-      setActivities([...activities, activity])
-    } else {
-      setActivities(activities.filter((a) => a !== activity))
+  // Form fields
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [destinations, setDestinations] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [duration, setDuration] = useState("")
+  const [accommodation, setAccommodation] = useState("")
+  const [travelers, setTravelers] = useState("")
+  const [additional, setAdditional] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    try {
+      const res = await fetch("/api/custom-tour", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          destinations,
+          start_date: startDate,
+          duration,
+          budget: budget[0],
+          accommodation,
+          travelers: Number(travelers),
+          additional_requirements: additional,
+        })
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error || "Something went wrong")
+        setLoading(false)
+        return
+      }
+      setIsSubmitted(true)
+      setDialogOpen(true)
+      // Reset form fields
+      setName("");
+      setEmail("");
+      setDestinations("");
+      setStartDate("");
+      setDuration("");
+      setAccommodation("");
+      setTravelers("");
+      setAdditional("");
+      setBudget([1000]);
+      setStep(1);
+    } catch (err) {
+      setError("Network error. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // TODO: Connect to backend API
-    setIsSubmitted(true)
-  }
 
-  if (isSubmitted) {
-    return (
-      <Card className="bg-white border-gray-200 shadow-lg rounded-2xl">
-        <CardContent className="p-8 text-center">
-          <div className="text-6xl mb-4">✨</div>
-          <h2 className="text-2xl font-bold mb-4 text-orange-600">Custom Tour Request Received!</h2>
-          <p className="text-gray-700 mb-6">
-            Our travel experts will create a personalized itinerary based on your preferences and contact you within 48
-            hours.
-          </p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50 rounded-full">
-            Create Another Custom Tour
-          </Button>
-        </CardContent>
-      </Card>
-    )
-  }
 
   return (
-    <Card className="bg-white border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-      <div className="relative w-full h-40 md:h-56 mb-4">
-        <Image
-          src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
-          alt="Travel inspiration"
-          fill
-          className="object-cover w-full h-full"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-2xl" />
+    <form onSubmit={handleSubmit} className="space-y-8 w-full px-0 md:px-4">
+      {/* Progress Dots */}
+      <div className="flex justify-center gap-3">
+        {[1, 2].map((s) => (
+          <div
+            key={s}
+            className={`w-4 h-4 rounded-full border-2 transition-colors
+              ${step === s ? "bg-orange-500 border-orange-500" : step > s ? "bg-orange-400 border-orange-400" : "border-gray-300 bg-white"}`}
+          />
+        ))}
       </div>
-      <CardHeader className="pt-0">
-        <CardTitle className="text-2xl font-bold text-gray-900">Create Your Custom Tour</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+
+      {/* Step 1 */}
+      {step === 1 && (
+        <>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-700">Full Name</Label>
-              <Input id="name" required className="bg-white border-gray-300 rounded-xl" />
+              <Input id="name" required className="bg-white border-gray-300 rounded-md h-12" value={name} onChange={e => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">Email</Label>
-              <Input id="email" type="email" required className="bg-white border-gray-300 rounded-xl" />
+              <Input id="email" type="email" required className="bg-white border-gray-300 rounded-md h-12" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
           </div>
 
@@ -83,20 +109,22 @@ export function CustomBookingForm() {
             <Textarea
               id="destinations"
               placeholder="Tell us about the places you'd like to visit..."
-              className="bg-white border-gray-300 rounded-xl"
+              className="bg-white border-gray-300 rounded-md"
               rows={3}
+              value={destinations}
+              onChange={e => setDestinations(e.target.value)}
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startDate" className="text-gray-700">Travel Start Date</Label>
-              <Input id="startDate" type="date" required className="bg-white border-gray-300 rounded-xl" />
+              <Input id="startDate" type="date" required className="bg-white border-gray-300 rounded-md h-12" value={startDate} onChange={e => setStartDate(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration" className="text-gray-700">Duration</Label>
-              <Select>
-                <SelectTrigger className="bg-white border-gray-300 rounded-xl">
+              <Select value={duration} onValueChange={setDuration}>
+                <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
                   <SelectValue placeholder="Select duration" />
                 </SelectTrigger>
                 <SelectContent>
@@ -109,20 +137,31 @@ export function CustomBookingForm() {
             </div>
           </div>
 
+          <div className="flex justify-end">
+            <Button type="button" onClick={() => setStep(2)} className="rounded-md px-6 py-3">
+              Next
+            </Button>
+          </div>
+        </>
+      )}
+
+      {/* Step 2 */}
+      {step === 2 && (
+        <>
           <div className="space-y-3">
             <Label className="text-gray-700">Budget Range (per person)</Label>
-            <Slider value={budget} onValueChange={setBudget} max={10000} min={500} step={100} className="w-full" />
+            <Slider value={budget} onValueChange={setBudget} max={500000} min={5000} step={1000} className="w-full" />
             <div className="flex justify-between text-sm text-gray-600">
-              <span>$500</span>
-              <span className="font-medium text-orange-600">${budget[0]}</span>
-              <span>$10,000+</span>
+              <span>₹5,000</span>
+              <span className="font-medium text-orange-600">₹{budget[0].toLocaleString('en-IN')}</span>
+              <span>₹5,00,000+</span>
             </div>
           </div>
 
           <div className="space-y-2">
             <Label className="text-gray-700">Accommodation Type</Label>
-            <Select>
-              <SelectTrigger className="bg-white border-gray-300 rounded-xl">
+            <Select value={accommodation} onValueChange={setAccommodation}>
+              <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
                 <SelectValue placeholder="Select accommodation" />
               </SelectTrigger>
               <SelectContent>
@@ -134,38 +173,10 @@ export function CustomBookingForm() {
             </Select>
           </div>
 
-          <div className="space-y-3">
-            <Label className="text-gray-700">Activities of Interest</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {[
-                "Adventure Sports",
-                "Cultural Tours",
-                "Wildlife Safari",
-                "Beach Activities",
-                "Mountain Trekking",
-                "Food Tours",
-                "Photography",
-                "Spiritual/Religious",
-                "Nightlife",
-              ].map((activity) => (
-                <div key={activity} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={activity}
-                    checked={activities.includes(activity)}
-                    onCheckedChange={(checked) => handleActivityChange(activity, checked as boolean)}
-                  />
-                  <Label htmlFor={activity} className="text-sm text-gray-700">
-                    {activity}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="travelers" className="text-gray-700">Number of Travelers</Label>
-            <Select>
-              <SelectTrigger className="bg-white border-gray-300 rounded-xl">
+            <Select value={travelers} onValueChange={setTravelers}>
+              <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
                 <SelectValue placeholder="Select number of travelers" />
               </SelectTrigger>
               <SelectContent>
@@ -183,19 +194,50 @@ export function CustomBookingForm() {
             <Textarea
               id="additional"
               placeholder="Any special requirements, dietary restrictions, accessibility needs, etc."
-              className="bg-white border-gray-300 rounded-xl"
+              className="bg-white border-gray-300 rounded-md"
               rows={4}
+              value={additional}
+              onChange={e => setAdditional(e.target.value)}
             />
           </div>
 
+          <div className="flex justify-between">
+            <Button type="button" onClick={() => setStep(1)} variant="outline" className="rounded-md px-6 py-3" disabled={loading}>
+              Back
+            </Button>
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg px-6 py-3 shadow-lg rounded-md"
+              disabled={loading}
+            >
+              {loading ? 'Submitting...' : 'Submit'}
+            </Button>
+          </div>
+        </>
+      )}
+    {error && <div className="text-red-500 text-center text-sm mb-2">{error}</div>}
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Request Submitted</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center justify-center py-4">
+          <CheckCircle className="text-green-500 w-16 h-16 mb-4" />
+          <p className="text-gray-700 mb-6 text-center">We will contact you soon with your custom tour plan.</p>
+        </div>
+        <DialogFooter>
           <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg py-6 shadow-lg rounded-full"
+            onClick={() => {
+              setDialogOpen(false);
+              setIsSubmitted(false);
+            }}
+            className="rounded-lg px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white w-full"
           >
-            Submit Custom Tour Request
+            OK
           </Button>
-        </form>
-      </CardContent>
-    </Card>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </form>
   )
 }
