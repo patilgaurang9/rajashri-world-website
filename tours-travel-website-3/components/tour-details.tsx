@@ -404,7 +404,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
           </div>
         </div>
       </div>
-    {/* Stats Section Before Footer */}
+    {/* Stats Section Before Footer
     <div className="w-full mt-16">
       <div className="px-2">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mb-12" />
@@ -433,7 +433,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
           </div>
         </div>
       </section>
-    </div>
+    </div> */}
     </div>
   );
 }
