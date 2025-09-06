@@ -10,7 +10,7 @@ export function Footer() {
             <Link href="/" className="flex items-center space-x-2">
               <MapPin className="h-8 w-8 text-white" />
               <span className="text-xl font-bold text-white">
-                Wanderlust Tours
+                Rajashri World
               </span>
             </Link>
             <p className="text-white leading-relaxed">
@@ -74,22 +74,22 @@ export function Footer() {
               </li>
               <li>
                 <Link href="#" className="text-white hover:text-orange-200 transition-colors">
-                  Paris, France
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
-                  Tokyo, Japan
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
-                  New York, USA
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
                   Dubai, UAE
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
+                  Manali, India
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
+                  Sikkim, India
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-white hover:text-orange-200 transition-colors">
+                  Goa, India
                 </Link>
               </li>
             </ul>
@@ -98,16 +98,16 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Contact Info</h3>
             <ul className="space-y-2 text-white">
-              <li>123 Travel Street</li>
-              <li>Adventure City, AC 12345</li>
-              <li>Phone: +1 (555) 123-4567</li>
-              <li>Email: info@wanderlusttours.com</li>
+              <li>1403, Mahavir Milestone Society</li>
+              <li>Kolbad, Thane(W) - 400601</li>
+              <li>Phone: 9226559359/ 8369979137</li>
+              <li>Email: rajashriworld711@gmail.com</li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-white mt-8 pt-8 text-center text-white">
-          <p>&copy; {new Date().getFullYear()} Wanderlust Tours. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Rajashri World. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -409,50 +409,50 @@ export interface FAQ {
 export const faqs: FAQ[] = [
   {
     id: "1",
-    question: "What is included in the tour packages?",
+    question: "How do I book a tour?",
     answer:
-      "Our tour packages typically include accommodation, daily breakfast, professional tour guides, transportation during the tour, entrance fees to attractions, and airport transfers. Specific inclusions vary by tour, so please check the individual tour details for complete information.",
+      "All bookings are handled through our 'Send Enquiry' option. Select your desired tour, click 'Send Enquiry,' and fill in the details. Our team will review your request, confirm availability, and share the next steps for payment and confirmation.",
   },
   {
     id: "2",
-    question: "How do I book a tour?",
+    question: "Can I request a custom tour package?",
     answer:
-      "You can book a tour through our website by selecting your desired tour and filling out the booking form, or by contacting our customer service team directly. We require a deposit to secure your booking, with the balance due before departure.",
+      "Yes! You can request a fully customized tour through the 'Send Enquiry' form. Just let us know your destinations, dates, budget, and interests, and our team will design a personalized itinerary for you.",
   },
   {
     id: "3",
-    question: "What is your cancellation policy?",
+    question: "Can I make special requests in my enquiry?",
     answer:
-      "Cancellations made 60+ days before departure receive a full refund minus a small processing fee. Cancellations 30-59 days before departure are subject to a 50% penalty. Cancellations within 30 days of departure are non-refundable. We strongly recommend travel insurance.",
+      "Of course. You can include requests such as room preferences, specific activities, additional nights, or transport upgrades in your enquiry. We’ll adjust the package accordingly before confirmation.",
   },
   {
     id: "4",
-    question: "Do you offer travel insurance?",
+    question: "What is included in the tour packages?",
     answer:
-      "While we dont directly provide travel insurance, we strongly recommend purchasing comprehensive travel insurance to protect your investment. We can recommend trusted insurance providers and help you understand what coverage you might need.",
+      "Our packages typically cover accommodation, daily breakfast, guided tours, transportation, entrance fees, and airport transfers. For custom requests, inclusions can be adjusted as per your preferences.",
   },
   {
     id: "5",
-    question: "What should I pack for my tour?",
+    question: "Do you help with visas, flights, or travel insurance?",
     answer:
-      "Packing requirements vary by destination and season. We provide detailed packing lists for each tour after booking. Generally, we recommend comfortable walking shoes, weather-appropriate clothing, necessary medications, and any specific items mentioned in your tour itinerary.",
+      "We don’t directly provide these services, but we can connect you with reliable partners for visa support, flight bookings, and travel insurance so your trip is seamless.",
   },
   {
     id: "6",
-    question: "Are your tours suitable for solo travelers?",
+    question: "What if I have dietary restrictions or special needs?",
     answer:
-      "Many of our travelers are solo adventurers, and our group tours are a great way to meet like-minded people. We ensure all solo travelers feel welcome and included. Some tours may have single supplement fees for private accommodation.",
+      "Please mention any dietary requirements or accessibility needs in your enquiry. We’ll coordinate with hotels, restaurants, and providers to make sure your needs are taken care of.",
   },
   {
     id: "7",
-    question: "What if I have dietary restrictions or special needs?",
+    question: "What is your cancellation policy?",
     answer:
-      "We accommodate various dietary restrictions and special needs whenever possible. Please inform us of any requirements during booking so we can make appropriate arrangements with hotels, restaurants, and activity providers.",
+      "Cancellations made 60+ days before departure are fully refundable minus a processing fee. 30–59 days before departure, a 50% penalty applies. Cancellations within 30 days are non-refundable. We recommend travel insurance.",
   },
   {
     id: "8",
-    question: "How experienced are your tour guides?",
+    question: "Are your tours suitable for solo travelers?",
     answer:
-      "All our tour guides are licensed professionals with extensive local knowledge and experience. They undergo regular training and are passionate about sharing their expertise. Most are multilingual and certified in first aid and safety procedures.",
+      "Yes! Many of our travelers book solo. You can join a group tour to meet others or request a custom solo package through the enquiry form.",
   },
 ]
