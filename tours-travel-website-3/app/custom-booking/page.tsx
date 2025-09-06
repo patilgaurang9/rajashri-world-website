@@ -8,7 +8,7 @@ export default function CustomBookingPage() {
         {/* Left: Image with overlay */}
         <div className="relative md:w-[45%] w-full h-64 md:h-auto">
           <Image
-            src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
+            src="https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/simon-english-48nerZQCHgo-unsplash.jpg"
             alt="Create Your Custom Tour"
             fill
             className="object-cover"

@@ -354,50 +354,51 @@ export interface Testimonial {
 export const testimonials: Testimonial[] = [
   {
     id: "1",
-    name: "Sarah Johnson",
-    location: "California, USA",
+    name: "Aarav Mehta",
+    location: "Mumbai, India",
     content:
-      "The Bali Cultural Adventure was absolutely incredible! Every detail was perfectly planned, and our guide was knowledgeable and friendly. The temples were breathtaking, and the cooking class was so much fun. I cant wait to book another tour with Wanderlust!",
-    avatar: "/images/av1.jpeg",
+      "The Rajasthan Heritage Tour was unforgettable! Exploring the palaces of Jaipur and riding camels in Jaisalmer felt like living in history. The cultural shows and traditional Rajasthani food made the trip extra special.",
+    avatar: "https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/av1.jpeg",
     rating: 5,
   },
   {
     id: "2",
-    name: "Michael Chen",
-    location: "Toronto, Canada",
+    name: "Rohan Sharma",
+    location: "Delhi, India",
     content:
-      "Tokyo was amazing! The perfect blend of traditional and modern experiences. The sushi making class was a highlight, and seeing Mount Fuji was a dream come true. The organization was flawless, and I felt safe and well-cared for throughout the entire trip.",
-    avatar: "/images/av2.jpeg",
+      "The Golden Triangle Tour exceeded all my expectations! Agra’s Taj Mahal took my breath away, and Delhi’s street food walk was delicious. The guides were knowledgeable and made history come alive. A must-do for travelers!",
+    avatar: "https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/av2.jpeg",
     rating: 5,
   },
   {
     id: "3",
-    name: "Emma Rodriguez",
-    location: "Madrid, Spain",
+    name: "Vikram Patel",
+    location: "Ahmedabad, India",
     content:
-      "Paris exceeded all my expectations! The romantic Seine cruise was magical, and the Eiffel Tower dinner was unforgettable. Our guide made sure we experienced the real Paris, not just the tourist spots. Highly recommend for couples!",
-    avatar: "/images/av3.jpeg",
+      "The Ladakh Adventure was the trip of a lifetime! Riding through the Himalayas, visiting Pangong Lake, and experiencing the local monasteries was surreal. The arrangements and homestays were excellent!",
+    avatar: "https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/av3.jpeg",
     rating: 5,
   },
   {
     id: "4",
-    name: "David Thompson",
-    location: "London, UK",
+    name: "Kunal Verma",
+    location: "Kolkata, India",
     content:
-      "The Iceland Northern Lights tour was the adventure of a lifetime! We were lucky to see the aurora on three different nights. The glacier hiking was thrilling, and the Blue Lagoon was so relaxing. Professional guides and excellent accommodations.",
-    avatar: "/images/v4.jpeg",
+      "Goa was the perfect blend of relaxation and adventure! From beach hopping to water sports and exploring old Portuguese churches, everything was perfectly arranged. The seafood was absolutely mouthwatering!",
+    avatar: "https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/v4.jpeg",
     rating: 5,
   },
   {
     id: "5",
-    name: "Lisa Park",
-    location: "Seoul, South Korea",
+    name: "Ananya Rao",
+    location: "Bengaluru, India",
     content:
-      "Dubai was pure luxury from start to finish! The desert safari was exciting, and the yacht cruise was elegant. The attention to detail and personalized service made this trip truly special. Worth every penny!",
-    avatar: "/images/av5.jpg",
+      "Kerala’s backwaters were a dream come true! The houseboat stay was serene, and watching the sunset over Alleppey was magical. The Ayurveda spa session left me refreshed and relaxed. Highly recommend this experience!",
+    avatar: "https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/av5.jpg",
     rating: 5,
   },
 ]
+
 
 export interface FAQ {
   id: string

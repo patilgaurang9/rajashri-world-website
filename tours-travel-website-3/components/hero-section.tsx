@@ -30,7 +30,7 @@ export function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/Screenshot 2025-08-04 173133.png"
+          src="https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/Screenshot%202025-08-04%20173133.png"
           alt="Travel destination background"
           fill
           priority

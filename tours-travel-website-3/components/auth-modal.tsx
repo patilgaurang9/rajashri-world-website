@@ -63,7 +63,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
         {/* Left: Image */}
         <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gray-100 p-0">
           <Image
-            src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
+            src="https://txttpwyddxfhakgygtdc.supabase.co/storage/v1/object/public/images/simon-english-48nerZQCHgo-unsplash.jpg"
             alt="Travel"
             width={520}
             height={520}
