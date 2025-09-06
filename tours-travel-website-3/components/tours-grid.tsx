@@ -45,7 +45,7 @@ export function ToursGrid({ tours, loading = false, onLoadMore, hasMore = false 
 
   if (loading && tours.length === 0) {
     return (
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {Array.from({ length: 6 }).map((_, index) => (
           <TourCardSkeleton key={index} />
         ))}
@@ -55,7 +55,7 @@ export function ToursGrid({ tours, loading = false, onLoadMore, hasMore = false 
 
   return (
     <div className="space-y-8">
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {tours.map((tour) => (
           <TourCard key={tour.id} tour={tour} />
         ))}

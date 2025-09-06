@@ -3,62 +3,68 @@ import { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-import { DollarSign, Clock, MapPin, Grid3x3 } from "lucide-react"
+import { IndianRupee, Clock, Filter } from "lucide-react"
 
-export function ToursFilters() {
-  const [priceRange, setPriceRange] = useState([0, 5000])
+
+export function ToursFilters({ onApply }: { onApply?: (filters: { minPrice: number, maxPrice: number, duration: string }) => void }) {
+  const [priceRange, setPriceRange] = useState([0, 100000])
   const [duration, setDuration] = useState("")
-  const [destination, setDestination] = useState("")
+
+  const handleReset = () => {
+    setPriceRange([0, 500000]);
+    setDuration("");
+    onApply?.({ minPrice: 0, maxPrice: 500000, duration: "" });
+  };
+
+  // Format Indian Rupees with commas
+  const formatINR = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
 
   return (
-    <div className="w-full">
-      {/* Main Filters Row */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-lg px-3 py-3 sm:px-4 sm:py-4">
-        <div className="flex flex-wrap gap-4 md:gap-6 items-end">
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Main Filters Container */}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 sm:p-6">
+        <div className="flex items-center gap-2 mb-4">
+          {/* <Filter className="w-5 h-5 text-orange-500" /> */}
+          <h3 className="text-lg font-semibold">Filter</h3>
+        </div>
+        
+        <div className="space-y-6">
           {/* Price Range */}
-          <div className="w-full sm:w-auto min-w-[160px] flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="w-4 h-4 text-gray-500" />
-              <Label className="text-xs font-medium text-gray-700">Price Range</Label>
+          <div className="w-full">
+            <div className="flex items-center gap-2 mb-3">
+              {/* <IndianRupee className="w-4 h-4 text-gray-500" /> */}
+              <Label className="text-sm font-medium text-gray-700">Price Range (₹)</Label>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <Slider 
                 value={priceRange} 
                 onValueChange={setPriceRange} 
-                max={5000} 
-                step={100} 
+                min={0}
+                max={100000} 
+                step={1000} 
                 className="w-full"
               />
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={priceRange[0]}
-                  onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                  className="w-14 px-2 py-1 text-xs border border-gray-200 rounded-lg text-center"
-                  placeholder="0"
-                />
-                <span className="text-xs text-gray-400">-</span>
-                <input
-                  type="number"
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 5000])}
-                  className="w-14 px-2 py-1 text-xs border border-gray-200 rounded-lg text-center"
-                  placeholder="5000"
-                />
+              <div className="flex items-center justify-between text-sm font-medium bg-gray-50 p-2 rounded-md">
+                <span className="bg-white border border-gray-200 rounded-md px-3 py-1">₹{formatINR(priceRange[0])}</span>
+                <span className="text-gray-400">to</span>
+                <span className="bg-white border border-gray-200 rounded-md px-3 py-1">₹{formatINR(priceRange[1])}+</span>
               </div>
             </div>
           </div>
-
+          
           {/* Duration */}
-          <div className="w-full sm:w-auto min-w-[120px] flex-1">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="w-full">
+            <div className="flex items-center gap-2 mb-3">
               <Clock className="w-4 h-4 text-gray-500" />
-              <Label className="text-xs font-medium text-gray-700">Duration</Label>
+              <Label className="text-sm font-medium text-gray-700">Duration</Label>
             </div>
             <Select value={duration} onValueChange={setDuration}>
-              <SelectTrigger className="bg-gray-50/50 border-gray-200 rounded-xl h-9 text-sm w-full">
+              <SelectTrigger className="bg-gray-50/50 border-gray-200 rounded-md h-11 text-sm w-full">
                 <SelectValue placeholder="Any duration" />
               </SelectTrigger>
               <SelectContent>
@@ -70,30 +76,22 @@ export function ToursFilters() {
             </Select>
           </div>
 
-          {/* Destination */}
-          <div className="w-full sm:w-auto min-w-[120px] flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-4 h-4 text-gray-500" />
-              <Label className="text-xs font-medium text-gray-700">Destination</Label>
-            </div>
-            <Select value={destination} onValueChange={setDestination}>
-              <SelectTrigger className="bg-gray-50/50 border-gray-200 rounded-xl h-9 text-sm w-full">
-                <SelectValue placeholder="Any destination" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asia">Asia</SelectItem>
-                <SelectItem value="europe">Europe</SelectItem>
-                <SelectItem value="america">America</SelectItem>
-                <SelectItem value="africa">Africa</SelectItem>
-                <SelectItem value="oceania">Oceania</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Apply Button */}
-          <div className="w-full sm:w-auto flex justify-end">
-            <Button className="h-9 px-6 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl font-medium text-sm shadow-lg hover:shadow-xl transition-all whitespace-nowrap w-full sm:w-auto mt-2 sm:mt-0">
+          <div className="w-full pt-2 flex gap-2">
+            <Button
+              className="h-11 px-6 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-md font-medium text-sm shadow-md hover:shadow-lg transition-all w-full"
+              type="button"
+              onClick={() => onApply?.({ minPrice: priceRange[0], maxPrice: priceRange[1], duration })}
+            >
               Apply Filters
+            </Button>
+            <Button
+              className="h-11 px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md font-medium text-sm shadow-md hover:shadow-lg transition-all"
+              type="button"
+              variant="outline"
+              onClick={handleReset}
+            >
+              Reset
             </Button>
           </div>
         </div>
