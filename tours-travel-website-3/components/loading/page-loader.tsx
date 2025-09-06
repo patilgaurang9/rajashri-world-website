@@ -15,7 +15,7 @@ export function PageLoader() {
 
         <div className="space-y-2">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-            Wanderlust Tours
+            Rajashri World
           </h2>
           <p className="text-gray-600 animate-pulse">Loading your adventure...</p>
         </div>
