@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TourCard } from "@/components/tour-card";
 import { TourCardSkeleton } from "@/components/loading/tour-card-skeleton";
@@ -56,10 +57,12 @@ function FeaturedToursContent() {
           <Button 
             asChild 
             size="lg" 
-            variant="outline" 
-            className="border-orange-500 text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 shadow-lg rounded-full"
+            className="bg-black text-white hover:bg-black/90 transition-all duration-300 transform hover:scale-105 shadow-lg rounded-full"
           >
-            <Link href="/tours">View All Tours</Link>
+            <Link href="/tours" className="inline-flex items-center gap-2">
+              View All Tours
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>

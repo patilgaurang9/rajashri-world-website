@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
-import { Chrome, Github } from "lucide-react"
 
 interface AuthModalProps {
   open: boolean
@@ -86,7 +85,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           {/* Sliding Toggle Bar */}
           <div className="mb-8 p-1 rounded-full bg-gray-200 flex w-full max-w-xs mx-auto md:mx-0 relative">
             <div
-              className={`absolute top-0 h-full w-1/2 rounded-full bg-orange-500 shadow-lg transform transition-transform duration-300 ${isLogin ? 'translate-x-0' : 'translate-x-full'}`}
+              className={`absolute top-0 h-full w-1/2 rounded-full bg-black shadow-lg transform transition-transform duration-300 ${isLogin ? 'translate-x-0' : 'translate-x-full'}`}
             ></div>
             <button
               className={`flex-1 text-center font-semibold rounded-full py-2 z-10 transition-colors duration-300 ${isLogin ? 'text-white' : 'text-gray-700'}`}
@@ -114,7 +113,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
                   placeholder="Full Name"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-black focus:border-black transition-all"
                   required
                 />
                 <input
@@ -122,7 +121,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
                   placeholder="Phone Number"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-black focus:border-black transition-all"
                   required
                 />
               </>
@@ -132,7 +131,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
               placeholder="Email Address"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-black focus:border-black transition-all"
               required
             />
             <input
@@ -140,12 +139,12 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
               placeholder="Password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-black focus:border-black transition-all"
               required
             />
             <button
               type="submit"
-              className="w-full py-4 bg-orange-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-orange-600 transition-all disabled:opacity-50"
+              className="w-full py-4 bg-black text-white font-bold text-lg rounded-xl shadow-lg hover:bg-black/90 transition-all disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (isLogin ? 'Logging in...' : 'Signing up...') : (isLogin ? 'Login' : 'Sign Up')}
@@ -153,22 +152,6 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
             {error && <p className="text-red-500 text-sm">{error}</p>}
             {success && <p className="text-green-600 text-sm">{success}</p>}
           </form>
-          <div className="mt-8 relative flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-300"></span>
-            </div>
-            <div className="relative bg-white px-4 text-sm text-gray-500">
-              Or continue with
-            </div>
-          </div>
-          <div className="mt-6 flex justify-center space-x-4">
-            <button className="flex items-center justify-center w-12 h-12 rounded-full border border-gray-300 hover:border-orange-500 transition-colors" disabled={loading}>
-              <Chrome className="w-6 h-6 text-gray-600" />
-            </button>
-            <button className="flex items-center justify-center w-12 h-12 rounded-full border border-gray-300 hover:border-orange-500 transition-colors" disabled={loading}>
-              <Github className="w-6 h-6 text-gray-600" />
-            </button>
-          </div>
         </div>
       </div>
     </div>

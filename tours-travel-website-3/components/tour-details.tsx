@@ -56,7 +56,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
         <div className="container mx-auto px-4 pt-24">
           {/* Image Gallery */}
           {gallery.length === 1 ? (
-            <div className="w-full h-96 rounded-lg overflow-hidden relative">
+            <div className="w-full h-96 rounded-2xl overflow-hidden relative">
               <Image
                 src={gallery[0] || "/placeholder.svg"}
                 alt={tour.title}
@@ -65,7 +65,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-2 h-96 rounded-lg overflow-hidden">
+            <div className="grid grid-cols-4 gap-2 h-96 rounded-2xl overflow-hidden">
               {/* Main large image - always gallery[0] */}
               <div className="col-span-2 row-span-2 relative">
                 <Image
@@ -102,7 +102,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
           {/* Left Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Title and Location */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h1 className="text-3xl font-bold text-gray-900 mb-3">{tour.title}</h1>
               <div className="flex items-center gap-4 text-gray-600 mb-4">
                 <div className="flex items-center gap-1">
@@ -123,7 +123,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                   </div>
                   {tour.days_breakdown.map((item: any, idx: number) => (
                     <div key={idx} className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-lg">
+                      <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white font-bold text-lg">
                         {item.days}
                       </div>
                       <div className="text-sm">
@@ -156,14 +156,14 @@ export function TourDetails({ tour }: TourDetailsProps) {
             </div>
 
             {/* Overview */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
               <p className="text-gray-700 leading-relaxed">{tour.description}</p>
             </div>
 
             {/* Highlights */}
             {Array.isArray(tour.highlights) && tour.highlights.length > 0 && (
-              <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Highlights</h2>
                 <div className="grid gap-3">
                   {tour.highlights.map((highlight: string, index: number) => (
@@ -178,20 +178,20 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
             {/* Itinerary */}
             {Array.isArray(tour.itinerary) && tour.itinerary.length > 0 && (
-              <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-6 text-gray-900">Detailed Itinerary</h2>
                 <div className="space-y-4">
                   {tour.itinerary.map((day: any, index: number) => {
                     const open = openDays.includes(index);
                     return (
-                      <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+                      <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden">
                         <button
                           className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none"
                           onClick={() => toggleDay(index)}
                           aria-expanded={open}
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white font-bold">
                               {index + 1}
                             </div>
                             <div className="text-left">
@@ -212,7 +212,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                             )}
                             <p className="text-gray-700 mb-3">{day.description}</p>
                             {day.hotel && (
-                              <div className="bg-blue-50 p-3 rounded-lg">
+                              <div className="bg-blue-50 p-3 rounded-2xl">
                                 <div className="text-sm text-blue-600 font-medium">Accommodation</div>
                                 <div className="text-blue-800">{day.hotel}</div>
                               </div>
@@ -228,7 +228,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
             {/* Inclusions/Exclusions */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Inclusions</h2>
                 <ul className="space-y-3">
                   {Array.isArray(tour.inclusions) && tour.inclusions.map((inclusion: string, index: number) => (
@@ -240,7 +240,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                 </ul>
               </div>
               
-              <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Exclusions</h2>
                 <ul className="space-y-3">
                   {Array.isArray(tour.exclusions) && tour.exclusions.length > 0 ? (
@@ -262,7 +262,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
             {/* Know Before You Go */}
             {Array.isArray(tour.know_before_you_go) && tour.know_before_you_go.length > 0 && (
-              <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Know Before You Go</h2>
                 <ul className="space-y-3">
                   {tour.know_before_you_go.map((item: string, index: number) => (
@@ -278,7 +278,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
           {/* Right Sidebar - Booking Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl p-6 shadow-sm sticky top-8">
+            <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-8">
               {/* Pricing */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Starting from</h3>
@@ -307,20 +307,20 @@ export function TourDetails({ tour }: TourDetailsProps) {
                   <a
                     href={tour.brochure_url}
                     download
-                    className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg px-4 py-3 transition-colors"
+                    className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-full px-4 py-3 transition-colors"
                   >
                     Download Brochure
                   </a>
                   <button
                     type="button"
-                    className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg p-3 transition-colors"
+                    className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition-colors"
                     title="Preview Brochure"
                     onClick={() => setBrochureOpen(true)}
                   >
                     <Eye className="h-5 w-5" />
                   </button>
                   <Dialog open={brochureOpen} onOpenChange={setBrochureOpen}>
-                    <DialogContent className="max-w-[90vw] w-[90vw] p-0">
+                    <DialogContent className="max-w-[90vw] w-[90vw] p-0 rounded-3xl overflow-hidden">
                       <DialogHeader className="px-6 pt-6">
                         <DialogTitle>Brochure Preview</DialogTitle>
                       </DialogHeader>
@@ -328,7 +328,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                         <iframe
                           src={tour.brochure_url}
                           title="Brochure Preview"
-                          className="w-full h-full rounded-b-lg border-0"
+                          className="w-full h-full rounded-b-3xl border-0"
                           frameBorder="0"
                         />
                       </div>
@@ -344,7 +344,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                   placeholder="Enter your name"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                  className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                   required
                 />
                 <input
@@ -352,11 +352,11 @@ export function TourDetails({ tour }: TourDetailsProps) {
                   placeholder="Enter email address"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                  className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                   required
                 />
                 <div className="flex gap-2">
-                  <select className="rounded-lg border border-gray-300 px-3 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-400" defaultValue="+91" disabled>
+                  <select className="rounded-full border border-gray-300 px-3 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black" defaultValue="+91" disabled>
                     <option value="+91">+91</option>
                   </select>
                   <input
@@ -364,20 +364,20 @@ export function TourDetails({ tour }: TourDetailsProps) {
                     placeholder="Enter phone number"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                    className="flex-1 rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                     required
                   />
                 </div>
                 <Button
                   type="submit"
-                  className="w-full rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 shadow-lg transition-all transform hover:scale-105"
+                  className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-3 shadow-lg transition-all"
                   disabled={loading}
                 >
                   {loading ? 'Sending...' : 'Send Enquiry'}
                 </Button>
                 {/* Success Dialog Popup */}
                 <Dialog open={success} onOpenChange={setSuccess}>
-                  <DialogContent>
+                  <DialogContent className="rounded-3xl border border-gray-200 p-6">
                     <DialogHeader>
                       <DialogTitle>Enquiry Sent!</DialogTitle>
                     </DialogHeader>
@@ -385,7 +385,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
                     <DialogFooter>
                       <button
                         type="button"
-                        className="w-full rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 mt-2"
+                        className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-2 mt-2"
                         onClick={() => setSuccess(false)}
                       >
                         OK

@@ -16,11 +16,11 @@ export function CTASection() {
           <Button
             asChild
             size="lg"
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg px-8 py-6 shadow-lg rounded-full"
+            className="bg-black hover:bg-black/90 text-white text-lg px-8 py-6 shadow-lg rounded-full"
           >
             <Link href="/tours">Browse Tours</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="border-orange-500 bg-white/80 hover:bg-orange-50 text-orange-600 hover:text-orange-700 text-lg px-8 py-6 shadow-lg rounded-full">
+          <Button asChild size="lg" variant="outline" className="border-black bg-white hover:bg-gray-50 text-black text-lg px-8 py-6 shadow-lg rounded-full">
             <Link href="/custom-booking">Create Custom Tour</Link>
           </Button>
         </div>

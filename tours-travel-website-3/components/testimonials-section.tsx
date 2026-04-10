@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, Star, Heart } from "lucide-react"
+import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import { TestimonialSkeleton } from "@/components/loading/testimonial-skeleton"
 import { testimonials } from "@/lib/data"
 
@@ -25,7 +25,7 @@ export function TestimonialsSection() {
       setIsLoading(false)
     }, 800)
 
-    const interval = setInterval(nextTestimonial, 5000)
+    const interval = setInterval(nextTestimonial, 4500)
 
     return () => {
       clearTimeout(loadingTimer)
@@ -34,16 +34,24 @@ export function TestimonialsSection() {
   }, [])
 
   return (
-    <section className="py-20 bg-gradient-to-r from-orange-50 to-red-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-            What Our{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Travelers</span>{" "}
-            Say
-          </h2>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            Read testimonials from our happy customers who have experienced unforgettable journeys with us
+    <section className="relative py-16 md:py-20 overflow-hidden">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
+          alt="Travellers background"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          quality={85}
+        />
+        <div className="absolute inset-0 bg-black/55" />
+      </div>
+
+      <div className="relative container mx-auto px-4">
+        <div className="max-w-5xl mx-auto mb-6 md:mb-8 text-left">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">What Our Travellers Say</h2>
+          <p className="text-white/90 text-sm md:text-base mt-2 max-w-xl">
+            Real stories from our happy travellers across destinations.
           </p>
         </div>
 
@@ -51,103 +59,71 @@ export function TestimonialsSection() {
           {isLoading ? (
             <TestimonialSkeleton />
           ) : (
-            <Card className="bg-white border-0 shadow-2xl rounded-3xl overflow-hidden">
-              <CardContent className="p-0">
-                <div className="relative">
-                  {/* Testimonial Content */}
-                  <div className="relative p-8 md:p-12">
-                    {/* Profile Section */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <Image
-                            src={testimonials[currentIndex].avatar || "/placeholder.svg"}
-                            alt={testimonials[currentIndex].name}
-                            width={64}
-                            height={64}
-                            className="rounded-full border-2 border-gray-200 shadow-lg"
-                          />
-                          <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
-                        </div>
-                        <div>
-                          <div className="font-bold text-lg text-gray-900">{testimonials[currentIndex].name}</div>
-                          <div className="text-gray-600 text-sm">@{testimonials[currentIndex].name.toLowerCase().replace(' ', '')}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Heart className="h-5 w-5 fill-orange-500 text-orange-500" />
+            <Card className="bg-white/95 border-0 shadow-2xl rounded-3xl overflow-hidden min-h-[390px]">
+              <CardContent className="p-3 sm:p-4 md:p-5 h-full">
+                <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 md:gap-6 items-stretch min-h-[350px]">
+                  <div className="rounded-3xl p-1.5">
+                    <div className="relative h-full w-full rounded-[24px] overflow-hidden">
+                      <Image
+                        src={testimonials[currentIndex].avatar || "/placeholder.svg"}
+                        alt={testimonials[currentIndex].name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 280px"
+                      />
+                      <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1.5 text-black text-sm font-semibold shadow-lg">
+                        {testimonials[currentIndex].name}
                       </div>
                     </div>
+                  </div>
 
-                    {/* Separator */}
-                    <div className="w-full h-px bg-gray-200 mb-6"></div>
-
-                    {/* Rating Stars */}
-                    <div className="flex items-center gap-1 mb-4">
+                  <div className="flex flex-col justify-center py-1 md:py-2">
+                    <div className="flex items-center gap-1 mb-3">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
+                        <Star
+                          key={i}
                           className={`h-4 w-4 ${
-                            i < testimonials[currentIndex].rating 
-                              ? "fill-orange-500 text-orange-500" 
+                            i < testimonials[currentIndex].rating
+                              ? "fill-orange-500 text-orange-500"
                               : "fill-gray-200 text-gray-200"
-                          }`} 
+                          }`}
                         />
                       ))}
                       <span className="ml-2 text-sm text-gray-600">({testimonials[currentIndex].rating}/5)</span>
                     </div>
 
-                    {/* Testimonial Text */}
-                    <blockquote className="text-lg text-gray-800 leading-relaxed mb-6">
+                    <blockquote className="text-base sm:text-lg text-gray-800 leading-relaxed mb-4">
                       "{testimonials[currentIndex].content}"
                     </blockquote>
 
-                    {/* Location */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                       {testimonials[currentIndex].location}
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={prevTestimonial}
+                        className="h-9 w-9 p-0 rounded-full border-black text-black hover:bg-black hover:text-white"
+                        aria-label="Previous review"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={nextTestimonial}
+                        className="h-9 w-9 p-0 rounded-full bg-black text-white hover:bg-black/90"
+                        aria-label="Next review"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          )}
-
-          {!isLoading && (
-            <>
-              <div className="flex justify-center gap-4 mt-8">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevTestimonial}
-                  className="border-gray-300 hover:bg-orange-50 hover:border-orange-300 text-gray-700 hover:text-orange-600 rounded-full"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={nextTestimonial}
-                  className="border-gray-300 hover:bg-orange-50 hover:border-orange-300 text-gray-700 hover:text-orange-600 rounded-full"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <div className="flex justify-center gap-2 mt-4">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentIndex 
-                        ? "bg-orange-500 scale-110" 
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
           )}
         </div>
       </div>

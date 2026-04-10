@@ -20,12 +20,12 @@ export function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <Card className="bg-white border-gray-200 shadow-md rounded-lg">
+      <Card className="bg-white border-gray-200 shadow-md rounded-2xl h-full">
         <CardContent className="p-8 text-center">
           <div className="text-5xl mb-4">📧</div>
           <h2 className="text-xl font-bold mb-2 text-green-600">Message Sent!</h2>
           <p className="text-gray-600 mb-6">Thank you for contacting us. We'll get back to you soon.</p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline" className="border-gray-400 text-gray-700 hover:bg-gray-100 rounded-md">
+          <Button onClick={() => setIsSubmitted(false)} variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-full">
             Send Another Message
           </Button>
         </CardContent>
@@ -34,7 +34,7 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="bg-white border-gray-200 shadow-md rounded-lg">
+      <Card className="bg-white border-gray-200 shadow-md rounded-2xl h-full overflow-hidden">
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold text-gray-900 tracking-tight">Contact Us</CardTitle>
       </CardHeader>
@@ -43,22 +43,22 @@ export function ContactForm() {
           <div className="grid md:grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label htmlFor="firstName" className="text-gray-700">First Name</Label>
-              <Input id="firstName" required className="bg-white border-gray-300 rounded-md" />
+              <Input id="firstName" required className="bg-white border-gray-300 rounded-full h-11" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="lastName" className="text-gray-700">Last Name</Label>
-              <Input id="lastName" required className="bg-white border-gray-300 rounded-md" />
+              <Input id="lastName" required className="bg-white border-gray-300 rounded-full h-11" />
             </div>
           </div>
 
           <div className="space-y-1">
             <Label htmlFor="email" className="text-gray-700">Email</Label>
-            <Input id="email" type="email" required className="bg-white border-gray-300 rounded-md" />
+            <Input id="email" type="email" required className="bg-white border-gray-300 rounded-full h-11" />
           </div>
 
           <div className="space-y-1">
             <Label htmlFor="subject" className="text-gray-700">Subject</Label>
-            <Input id="subject" required className="bg-white border-gray-300 rounded-md" />
+            <Input id="subject" required className="bg-white border-gray-300 rounded-full h-11" />
           </div>
 
           <div className="space-y-1">
@@ -67,14 +67,14 @@ export function ContactForm() {
               id="message"
               required
               placeholder="How can we help you?"
-              className="bg-white border-gray-300 rounded-md"
+              className="bg-white border-gray-300 rounded-2xl"
               rows={5}
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base py-4 shadow rounded-md font-semibold tracking-wide transition-colors"
+            className="w-full bg-black hover:bg-black/90 text-white text-base py-4 shadow rounded-full font-semibold tracking-wide transition-colors"
           >
             Send Message
           </Button>

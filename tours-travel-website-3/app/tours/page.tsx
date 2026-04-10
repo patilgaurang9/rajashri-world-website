@@ -7,7 +7,7 @@ export default function ToursPage() {
   const [tours, setTours] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchTours = async (filters?: { minPrice: number, maxPrice: number, duration: string }) => {
+  const fetchTours = async (filters?: { minPrice: number, maxPrice: number, duration: string, startDate?: string, endDate?: string }) => {
     setLoading(true);
     let body = filters || { minPrice: 0, maxPrice: 500000, duration: "" };
     const res = await fetch("/api/tours", {
@@ -27,21 +27,21 @@ export default function ToursPage() {
   return (
     <div className="min-h-screen pt-20 pb-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+        <div className="text-left mb-12 max-w-3xl">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black">
             Explore Our Tours
           </h1>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 max-w-2xl">
             Discover amazing destinations and create unforgettable memories with our carefully curated tours
           </p>
         </div>
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Side Filters */}
-          <div className="w-full lg:w-1/4 mb-8 lg:mb-0">
+          <div className="w-full lg:w-[340px] xl:w-[360px] mb-8 lg:mb-0 shrink-0">
             <ToursFilters onApply={fetchTours} />
           </div>
           {/* Tours Grid */}
-<div className="w-full lg:w-3/4 min-h-[60vh] flex items-center justify-center">
+<div className="w-full lg:flex-1 min-h-[60vh] flex items-center justify-center">
   {loading ? (
     <p className="text-gray-500 text-lg">Loading tours...</p>
   ) : tours.length === 0 ? (

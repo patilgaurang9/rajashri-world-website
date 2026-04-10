@@ -10,10 +10,6 @@ export default function HomePage() {
       <HeroSection />
       {/* <StatsSection /> */}
       <FeaturedTours />
-      {/* Separator line between Featured Tours and Popular Destinations */}
-      <div className="w-full flex justify-center my-4 mb-12">
-        <div className="h-[2px] w-full max-w-3xl bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
-      </div>
       <PopularDestinations/>
       <TestimonialsSection />
       <CTASection />

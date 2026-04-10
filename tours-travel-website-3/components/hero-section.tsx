@@ -3,13 +3,30 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Play, Search, Calendar as CalendarIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ArrowRight, ArrowUpRight, Search, MapPin, Calendar as CalendarIcon } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import { format } from "date-fns"
+import { supabase } from "@/lib/supabaseClient"
+
+type TourSuggestion = {
+  id: string | number
+  slug: string
+  title: string
+  location: string | null
+}
 
 export function HeroSection() {
-  const [date, setDate] = useState<Date | undefined>(undefined)
+  const router = useRouter()
+  const [destination, setDestination] = useState("")
+  const [checkIn, setCheckIn] = useState("")
+  const [checkOut, setCheckOut] = useState("")
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [suggestions, setSuggestions] = useState<TourSuggestion[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+  const [selectedSuggestion, setSelectedSuggestion] = useState<TourSuggestion | null>(null)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const setVH = () => {
@@ -17,16 +34,111 @@ export function HeroSection() {
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
 
-    // Set immediately without delay
     setVH();
-
-    // Update on resize
     window.addEventListener('resize', setVH);
     return () => window.removeEventListener('resize', setVH);
   }, []);
 
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      if (!destination.trim()) {
+        setSuggestions([])
+        setSelectedSuggestion(null)
+        setShowSuggestions(false)
+        return
+      }
+
+      setLoadingSuggestions(true)
+      try {
+        const query = destination.trim()
+        const { data: titleData, error: titleError } = await supabase
+          .from("tours")
+          .select("id, slug, title, location")
+          .ilike("title", `%${query}%`)
+          .limit(8)
+
+        let destinationData: TourSuggestion[] = []
+        const { data: byDestination, error: destinationError } = await supabase
+          .from("tours")
+          .select("id, slug, title, location")
+          .ilike("location", `%${query}%`)
+          .limit(8)
+
+        if (!destinationError && byDestination) {
+          destinationData = byDestination
+        }
+
+        if (!titleError && titleData) {
+          const merged = [...titleData, ...destinationData]
+          const uniqueById = Array.from(new Map(merged.map((tour) => [tour.id, tour])).values())
+          setSuggestions(uniqueById.slice(0, 8))
+          setShowSuggestions(uniqueById.length > 0)
+        } else if (!destinationError && destinationData.length > 0) {
+          setSuggestions(destinationData)
+          setShowSuggestions(true)
+        } else {
+          setSuggestions([])
+          setShowSuggestions(false)
+        }
+      } catch (err) {
+        console.error("Error fetching destinations:", err)
+        setSuggestions([])
+        setShowSuggestions(false)
+      } finally {
+        setLoadingSuggestions(false)
+      }
+    }
+
+    const timeout = setTimeout(fetchDestinations, 220)
+    return () => clearTimeout(timeout)
+  }, [destination])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const handleDestinationSelect = (tour: TourSuggestion) => {
+    setDestination(tour.location || tour.title)
+    setSelectedSuggestion(tour)
+    setShowSuggestions(false)
+  }
+
+  const openMatchedTour = () => {
+    const query = destination.trim().toLowerCase()
+    const directMatch = suggestions.find(
+      (tour) =>
+        tour.title.toLowerCase() === query ||
+        (tour.location && tour.location.toLowerCase() === query)
+    )
+
+    const bestMatch = selectedSuggestion ?? directMatch ?? suggestions[0]
+
+    if (bestMatch?.slug) {
+      router.push(`/tours/${bestMatch.slug}`)
+      return
+    }
+
+    if (destination.trim()) {
+      const params = new URLSearchParams()
+      params.set("destination", destination.trim())
+      router.push(`/tours?${params.toString()}`)
+    }
+  }
+
   return (
-    <section className="relative flex items-center justify-center overflow-hidden px-2 py-8 sm:py-12 min-h-[80vh] hero-section">
+    <section className="relative flex items-center justify-center overflow-hidden px-4 py-10 sm:py-14 min-h-[80vh] hero-section">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -41,78 +153,160 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/70" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto px-2 sm:px-4">
-        <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight text-white break-words">
-          Discover the{" "}
-          <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">World</span>
-          <br />
-          Like Never Before
-        </h1>
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto mt-6 sm:mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+          {/* Left Content */}
+          <div className="text-left lg:pr-8 lg:pl-3">
+            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 leading-tight text-white">
+              <span className="block">Let's find</span>
+              <span className="block sm:whitespace-nowrap">your next adventure</span>
+            </h1>
 
-        <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-white mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-1 sm:px-2">
-          Embark on extraordinary journeys with our curated tours. From breathtaking landscapes to cultural immersions,
-          create memories that last a lifetime.
-        </p>
+            <p className="text-sm xs:text-base sm:text-lg md:text-xl text-gray-200 mb-8 leading-relaxed max-w-lg">
+              When an unknown printer took a gallery offer type area year antype of make special moment
+            </p>
 
-        {/* Search Bar
-        <div className="mb-6 sm:mb-8 max-w-full sm:max-w-3xl mx-auto p-2 sm:p-3 rounded-2xl border border-white/30 bg-white/20 backdrop-blur-md flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch">
-          <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
-            <Input
-              type="text"
-              placeholder="Where do you want to go?"
-              className="pl-9 pr-3 w-full bg-transparent text-white placeholder:text-white/70 border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-xs xs:text-sm sm:text-base"
-            />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Link
+                href="/tours"
+                className="group inline-flex items-center w-fit"
+                aria-label="Take a tour"
+              >
+                <span className="h-12 sm:h-14 px-7 sm:px-8 rounded-full bg-white text-gray-900 font-semibold inline-flex items-center shadow-lg transition-all duration-300 group-hover:bg-gray-100">
+                  Take a tour
+                </span>
+                <span className="-ml-2 h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-orange-500 text-white inline-flex items-center justify-center border-4 border-white transition-transform duration-300 group-hover:translate-x-0.5 group-hover:bg-orange-600">
+                  <ArrowUpRight className="h-5 w-5" />
+                </span>
+              </Link>
+            </div>
           </div>
-          <div className="relative w-full sm:w-44 flex-shrink-0">
-            <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70 z-10" />
-            <Input
-              type="date"
-              value={date ? format(date, "yyyy-MM-dd") : ""}
-              onChange={(e) => setDate(e.target.value ? new Date(e.target.value) : undefined)}
-              className="pl-9 pr-3 w-full bg-transparent text-white placeholder:text-white/70 border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-xs xs:text-sm sm:text-base [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-70 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-              min={format(new Date(), "yyyy-MM-dd")}
-            />
+
+          {/* Right Search Card */}
+          <div className="flex flex-col gap-8 lg:justify-self-end w-full lg:max-w-md">
+            {/* Search Card */}
+            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-7 w-full">
+              {/* Destination Search */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-900 mb-3">Destination</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search destination..."
+                    value={destination}
+                    onChange={(e) => {
+                      setDestination(e.target.value)
+                      setSelectedSuggestion(null)
+                    }}
+                    onFocus={() => destination && setShowSuggestions(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault()
+                        setShowSuggestions(false)
+                        openMatchedTour()
+                      }
+                    }}
+                    className="pl-12 pr-4 py-3 w-full border border-gray-200 rounded-full focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent text-gray-900"
+                  />
+                  {showSuggestions && (
+                    <div
+                      ref={suggestionsRef}
+                      className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg z-50"
+                    >
+                      {loadingSuggestions ? (
+                        <div className="px-4 py-3 text-sm text-gray-400">Loading destinations...</div>
+                      ) : suggestions.length === 0 ? (
+                        <div className="px-4 py-3 text-sm text-gray-400">No destination found</div>
+                      ) : (
+                        suggestions.map((tour) => (
+                          <button
+                            key={tour.id}
+                            onClick={() => handleDestinationSelect(tour)}
+                            className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors first:rounded-t-lg last:rounded-b-lg flex items-center gap-2 text-gray-700"
+                          >
+                            <MapPin className="h-4 w-4 text-gray-400" />
+                            <span className="truncate">
+                              {tour.location || tour.title}
+                              {tour.location && (
+                                <span className="text-gray-400 ml-1">· {tour.title}</span>
+                              )}
+                            </span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">Check In</label>
+                  <div className="relative">
+                    <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+                    <Input
+                      type="date"
+                      value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      className="pl-12 pr-4 py-3 w-full border border-gray-200 rounded-full focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent text-gray-900"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">Check Out</label>
+                  <div className="relative">
+                    <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+                    <Input
+                      type="date"
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="pl-12 pr-4 py-3 w-full border border-gray-200 rounded-full focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent text-gray-900"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Search Button */}
+              <Button
+                size="lg"
+                className="w-full bg-orange-500 text-white hover:bg-orange-600 font-semibold py-3 rounded-full transition-all duration-300 transform hover:scale-105"
+                onClick={() => {
+                  setShowSuggestions(false)
+                  openMatchedTour()
+                }}
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Search
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+              <Button
+                asChild
+                variant="secondary"
+                size="lg"
+                className="w-full bg-white text-gray-900 hover:bg-gray-100 font-semibold py-3 rounded-full transition-all duration-300 border border-white"
+              >
+                <Link href="/custom-booking" className="flex items-center justify-center gap-2">
+                  Create Custom Tour
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                className="w-full bg-black text-white hover:bg-black/90 font-semibold py-3 rounded-full transition-all duration-300"
+              >
+                <Link href="/tours" className="flex items-center justify-center gap-2">
+                  Explore Tours
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
-          <Button
-            size="default"
-            className="w-full sm:w-auto flex-shrink-0 bg-white text-gray-900 hover:bg-gray-100 text-xs xs:text-sm sm:text-base px-4 sm:px-5 py-2.5 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            Search
-          </Button>
-        </div> */}
-
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-          <Button
-            asChild
-            size="default"
-            variant="outline"
-            className="w-full sm:w-auto border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white hover:text-white text-xs xs:text-sm sm:text-base px-4 sm:px-5 py-2.5 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <Link href="/tours" className="flex items-center justify-center gap-2">
-              Explore Tours
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-
-          <Button
-            asChild
-            size="default"
-            className="w-full sm:w-auto bg-white text-gray-900 hover:bg-gray-100 text-xs xs:text-sm sm:text-base px-4 sm:px-5 py-2.5 sm:py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            <Link href="/custom-booking" className="flex items-center justify-center gap-2">
-              <Play className="h-4 w-4" />
-              Custom Tour
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-4 h-6 sm:w-5 sm:h-8 border-2 border-orange-400 rounded-full flex justify-center">
-          <div className="w-1 h-1.5 sm:h-2 bg-orange-500 rounded-full mt-1 sm:mt-1.5 animate-pulse" />
         </div>
       </div>
     </section>

@@ -43,41 +43,35 @@ export function TourCard({ tour }: TourCardProps) {
     if (days) return `${days}D`;
     return "";
   }
-  // Truncate description
-  function shortDescription(desc: string) {
-    if (!desc) return "";
-    return desc.length > 120 ? desc.slice(0, 120) + "..." : desc;
+  function formatDateRange(startDate?: string, endDate?: string) {
+    if (startDate && endDate) return `${startDate} - ${endDate}`;
+    return startDate || endDate || "Dates available on request";
   }
   return (
     <>
       <Link href={`/tours/${tour.slug}`} className="block group">
-        <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-xl">
-          <div className="relative overflow-hidden rounded-t-xl">
+        <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-2xl p-2">
+          <div className="relative overflow-hidden rounded-xl">
             <Image
               src={tour.gallery?.[0] || "/placeholder.svg"}
               alt={tour.title}
               width={400}
               height={250}
-              className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+              className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="lazy"
               quality={85}
             />
           </div>
-          <CardContent className="p-4 sm:p-6 flex flex-col">
+          <CardContent className="p-4 pt-3 sm:p-4 flex flex-col">
             <h3 className="text-lg sm:text-xl font-bold mb-1 group-hover:text-orange-600 transition-colors line-clamp-2 text-gray-900">
               {tour.title}
             </h3>
-            {tour.start_date && (
-              <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
+            <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                 <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>{tour.start_date}</span>
-              </div>
-            )}
-            <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
-              {shortDescription(tour.description)}
-            </p>
-            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 mb-4 gap-2">
+                <span>{formatDateRange(tour.start_date, tour.end_date)}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 mb-3 gap-2">
               <div className="flex items-center gap-1">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="truncate max-w-20 sm:max-w-24">{tour.location}</span>
@@ -87,7 +81,7 @@ export function TourCard({ tour }: TourCardProps) {
                 <span>{formatNightsDays(tour.duration_days, tour.duration_nights)}</span>
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2 gap-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-base sm:text-lg text-black">₹ {Number((tour.price_with_flight ?? tour.price_without_flight)).toLocaleString("en-IN")}</span>
               <div className="flex items-center gap-2">
                 <Button
@@ -98,7 +92,7 @@ export function TourCard({ tour }: TourCardProps) {
                 >
                   Send Enquiry
                 </Button>
-                <button type="button" className="flex items-center justify-center bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-full w-8 h-8 p-0 shadow transition-all" title="Call">
+                <button type="button" className="flex items-center justify-center bg-black hover:bg-black/90 text-white rounded-full w-8 h-8 p-0 shadow transition-all" title="Call">
                   <Phone className="h-4 w-4" />
                 </button>
               </div>
@@ -108,9 +102,9 @@ export function TourCard({ tour }: TourCardProps) {
       </Link>
       {/* Enquiry Dialog */}
       <Dialog open={open} onOpenChange={v => { setOpen(v); if (!v) setSuccess(false); }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Send Enquiry</DialogTitle>
+        <DialogContent className="rounded-3xl border border-gray-200 p-6 sm:p-7">
+          <DialogHeader className="text-center sm:text-center">
+            <DialogTitle className="text-xl font-bold">Send Enquiry</DialogTitle>
           </DialogHeader>
           {success ? (
             <>
@@ -118,7 +112,7 @@ export function TourCard({ tour }: TourCardProps) {
               <DialogFooter>
                 <button
                   type="button"
-                  className="w-full rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 mt-2"
+                  className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-3 mt-2"
                   onClick={() => { setOpen(false); setSuccess(false); }}
                 >
                   OK
@@ -132,7 +126,7 @@ export function TourCard({ tour }: TourCardProps) {
                 placeholder="Enter your name"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                 required
               />
               <input
@@ -140,11 +134,11 @@ export function TourCard({ tour }: TourCardProps) {
                 placeholder="Enter email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                 required
               />
               <div className="flex gap-2">
-                <select className="rounded-lg border border-gray-300 px-3 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-400" defaultValue="+91" disabled>
+                <select className="rounded-full border border-gray-300 px-3 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black" defaultValue="+91" disabled>
                   <option value="+91">+91</option>
                 </select>
                 <input
@@ -152,13 +146,13 @@ export function TourCard({ tour }: TourCardProps) {
                   placeholder="Enter phone number"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                  className="flex-1 rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                   required
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 shadow-lg transition-all transform hover:scale-105"
+                className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-3 shadow-lg transition-all"
                 disabled={loading}
               >
                 {loading ? 'Sending...' : 'Send Enquiry'}

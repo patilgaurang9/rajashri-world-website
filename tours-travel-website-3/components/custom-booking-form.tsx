@@ -85,7 +85,7 @@ export function CustomBookingForm() {
           <div
             key={s}
             className={`w-4 h-4 rounded-full border-2 transition-colors
-              ${step === s ? "bg-orange-500 border-orange-500" : step > s ? "bg-orange-400 border-orange-400" : "border-gray-300 bg-white"}`}
+              ${step === s ? "bg-black border-black" : step > s ? "bg-black/70 border-black/70" : "border-gray-300 bg-white"}`}
           />
         ))}
       </div>
@@ -96,11 +96,11 @@ export function CustomBookingForm() {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-700">Full Name</Label>
-              <Input id="name" required className="bg-white border-gray-300 rounded-md h-12" value={name} onChange={e => setName(e.target.value)} />
+              <Input id="name" required className="bg-white border-gray-300 rounded-full h-12" value={name} onChange={e => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">Email</Label>
-              <Input id="email" type="email" required className="bg-white border-gray-300 rounded-md h-12" value={email} onChange={e => setEmail(e.target.value)} />
+              <Input id="email" type="email" required className="bg-white border-gray-300 rounded-full h-12" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
           </div>
 
@@ -109,7 +109,7 @@ export function CustomBookingForm() {
             <Textarea
               id="destinations"
               placeholder="Tell us about the places you'd like to visit..."
-              className="bg-white border-gray-300 rounded-md"
+              className="bg-white border-gray-300 rounded-2xl"
               rows={3}
               value={destinations}
               onChange={e => setDestinations(e.target.value)}
@@ -119,12 +119,12 @@ export function CustomBookingForm() {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startDate" className="text-gray-700">Travel Start Date</Label>
-              <Input id="startDate" type="date" required className="bg-white border-gray-300 rounded-md h-12" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <Input id="startDate" type="date" required className="bg-white border-gray-300 rounded-full h-12" value={startDate} onChange={e => setStartDate(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration" className="text-gray-700">Duration</Label>
               <Select value={duration} onValueChange={setDuration}>
-                <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
+                <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
                   <SelectValue placeholder="Select duration" />
                 </SelectTrigger>
                 <SelectContent>
@@ -138,7 +138,7 @@ export function CustomBookingForm() {
           </div>
 
           <div className="flex justify-end">
-            <Button type="button" onClick={() => setStep(2)} className="rounded-md px-6 py-3">
+            <Button type="button" onClick={() => setStep(2)} className="rounded-full px-6 py-3 bg-black hover:bg-black/90 text-white">
               Next
             </Button>
           </div>
@@ -153,7 +153,7 @@ export function CustomBookingForm() {
             <Slider value={budget} onValueChange={setBudget} max={500000} min={5000} step={1000} className="w-full" />
             <div className="flex justify-between text-sm text-gray-600">
               <span>₹5,000</span>
-              <span className="font-medium text-orange-600">₹{budget[0].toLocaleString('en-IN')}</span>
+              <span className="font-medium text-black">₹{budget[0].toLocaleString('en-IN')}</span>
               <span>₹5,00,000+</span>
             </div>
           </div>
@@ -161,7 +161,7 @@ export function CustomBookingForm() {
           <div className="space-y-2">
             <Label className="text-gray-700">Accommodation Type</Label>
             <Select value={accommodation} onValueChange={setAccommodation}>
-              <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
+              <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
                 <SelectValue placeholder="Select accommodation" />
               </SelectTrigger>
               <SelectContent>
@@ -176,7 +176,7 @@ export function CustomBookingForm() {
           <div className="space-y-2">
             <Label htmlFor="travelers" className="text-gray-700">Number of Travelers</Label>
             <Select value={travelers} onValueChange={setTravelers}>
-              <SelectTrigger className="bg-white border-gray-300 rounded-md h-12">
+              <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
                 <SelectValue placeholder="Select number of travelers" />
               </SelectTrigger>
               <SelectContent>
@@ -194,7 +194,7 @@ export function CustomBookingForm() {
             <Textarea
               id="additional"
               placeholder="Any special requirements, dietary restrictions, accessibility needs, etc."
-              className="bg-white border-gray-300 rounded-md"
+              className="bg-white border-gray-300 rounded-2xl"
               rows={4}
               value={additional}
               onChange={e => setAdditional(e.target.value)}
@@ -202,12 +202,12 @@ export function CustomBookingForm() {
           </div>
 
           <div className="flex justify-between">
-            <Button type="button" onClick={() => setStep(1)} variant="outline" className="rounded-md px-6 py-3" disabled={loading}>
+            <Button type="button" onClick={() => setStep(1)} variant="outline" className="rounded-full px-6 py-3 border-black text-black hover:bg-black hover:text-white" disabled={loading}>
               Back
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg px-6 py-3 shadow-lg rounded-md"
+              className="bg-black hover:bg-black/90 text-white text-lg px-6 py-3 shadow-lg rounded-full"
               disabled={loading}
             >
               {loading ? 'Submitting...' : 'Submit'}
@@ -217,7 +217,7 @@ export function CustomBookingForm() {
       )}
     {error && <div className="text-red-500 text-center text-sm mb-2">{error}</div>}
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent>
+      <DialogContent className="rounded-3xl border border-gray-200 p-6">
         <DialogHeader>
           <DialogTitle>Request Submitted</DialogTitle>
         </DialogHeader>
@@ -231,7 +231,7 @@ export function CustomBookingForm() {
               setDialogOpen(false);
               setIsSubmitted(false);
             }}
-            className="rounded-lg px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white w-full"
+            className="rounded-full px-6 py-3 bg-black hover:bg-black/90 text-white w-full"
           >
             OK
           </Button>
