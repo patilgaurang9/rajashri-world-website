@@ -41,6 +41,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
   const gallery = Array.isArray(tour.gallery) ? tour.gallery : [];
   const [openDays, setOpenDays] = useState<number[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const displayPrice = tour.price_without_flight != null ? tour.price_without_flight : tour.price_with_flight;
   
   const toggleDay = (idx: number) => {
     setOpenDays((prev) =>
@@ -281,23 +282,15 @@ export function TourDetails({ tour }: TourDetailsProps) {
             <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-8">
               {/* Pricing */}
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Starting from</h3>
-                {tour.price_without_flight != null && (
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-600">Without Flight</span>
-                    <span className="text-xl font-bold text-gray-900">
-                      ₹{Number(tour.price_without_flight).toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                )}
-                {tour.price_with_flight != null && (
+                <h3 className="text-lg font-bold text-gray-900 mb-3">Price</h3>
+                {displayPrice != null ? (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">With Flight</span>
+                    <span className="text-gray-600">Price</span>
                     <span className="text-xl font-bold text-orange-600">
-                      ₹{Number(tour.price_with_flight).toLocaleString("en-IN")}
+                      ₹{Number(displayPrice).toLocaleString("en-IN")}
                     </span>
                   </div>
-                )}
+                ) : null}
                 <p className="text-xs text-gray-500 mt-2">*Per person on twin sharing basis</p>
               </div>
 
