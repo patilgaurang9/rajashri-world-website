@@ -47,17 +47,26 @@ export function TourCard({ tour }: TourCardProps) {
     if (startDate && endDate) return `${startDate} - ${endDate}`;
     return startDate || endDate || "Dates available on request";
   }
-    const gallery = typeof tour.gallery === 'string' 
-      ? JSON.parse(tour.gallery || '[]') 
-      : (tour.gallery || []);
+  let parsedGallery: string[] = [];
+  try {
+    const raw = typeof tour.gallery === 'string' ? JSON.parse(tour.gallery) : tour.gallery;
+    // Handle potential double-stringified JSON
+    const actualArray = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (Array.isArray(actualArray)) {
+      parsedGallery = actualArray.filter((url: any) => typeof url === 'string' && url.trim().length > 0);
+    }
+  } catch (e) {
+    parsedGallery = [];
+  }
+  const firstImage = parsedGallery[0] || "/placeholder.svg";
 
-    return (
-      <>
-        <Link href={`/tours/${tour.slug}`} className="block group">
-          <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-2xl p-2">
-            <div className="relative overflow-hidden rounded-xl">
-              <Image
-                src={gallery?.[0] || "/placeholder.svg"}
+  return (
+    <>
+      <Link href={`/tours/${tour.slug}`} className="block group">
+        <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-2xl p-2">
+          <div className="relative overflow-hidden rounded-xl">
+            <Image
+              src={firstImage}
                 alt={tour.title}
               width={400}
               height={250}
