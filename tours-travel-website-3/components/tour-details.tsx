@@ -38,7 +38,21 @@ export function TourDetails({ tour }: TourDetailsProps) {
       // Optionally handle error
     }
   };
-  const gallery = Array.isArray(tour.gallery) ? tour.gallery : [];
+  const parseHelper = (data: any) => {
+    if (typeof data === 'string') {
+      try { return JSON.parse(data); } catch (e) { return []; }
+    }
+    return data || [];
+  };
+
+  const gallery = parseHelper(tour.gallery);
+  const highlights = parseHelper(tour.highlights);
+  const itinerary = parseHelper(tour.itinerary);
+  const inclusions = parseHelper(tour.inclusions);
+  const exclusions = parseHelper(tour.exclusions);
+  const know_before_you_go = parseHelper(tour.know_before_you_go);
+  const days_breakdown = parseHelper(tour.days_breakdown);
+
   const [openDays, setOpenDays] = useState<number[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const displayPrice = tour.price_without_flight != null ? tour.price_without_flight : tour.price_with_flight;
@@ -117,12 +131,12 @@ export function TourDetails({ tour }: TourDetailsProps) {
               </div>
               
               {/* Cities breakdown - Thrillophilia style */}
-              {Array.isArray(tour.days_breakdown) && tour.days_breakdown.length > 0 && (
+              {Array.isArray(days_breakdown) && days_breakdown.length > 0 && (
                 <div className="flex items-center gap-4 mb-4">
                   <div className="bg-orange-600 text-white px-3 py-1 rounded-full font-bold text-sm">
                     {tour.duration_days}D/{tour.duration_nights}N
                   </div>
-                  {tour.days_breakdown.map((item: any, idx: number) => (
+                  {days_breakdown.map((item: any, idx: number) => (
                     <div key={idx} className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white font-bold text-lg">
                         {item.days}
@@ -163,11 +177,11 @@ export function TourDetails({ tour }: TourDetailsProps) {
             </div>
 
             {/* Highlights */}
-            {Array.isArray(tour.highlights) && tour.highlights.length > 0 && (
+            {Array.isArray(highlights) && highlights.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Highlights</h2>
                 <div className="grid gap-3">
-                  {tour.highlights.map((highlight: string, index: number) => (
+                  {highlights.map((highlight: string, index: number) => (
                     <div key={index} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
                       <p className="text-gray-700">{highlight}</p>
@@ -178,11 +192,11 @@ export function TourDetails({ tour }: TourDetailsProps) {
             )}
 
             {/* Itinerary */}
-            {Array.isArray(tour.itinerary) && tour.itinerary.length > 0 && (
+            {Array.isArray(itinerary) && itinerary.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-6 text-gray-900">Detailed Itinerary</h2>
                 <div className="space-y-4">
-                  {tour.itinerary.map((day: any, index: number) => {
+                  {itinerary.map((day: any, index: number) => {
                     const open = openDays.includes(index);
                     return (
                       <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden">
@@ -232,7 +246,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Inclusions</h2>
                 <ul className="space-y-3">
-                  {Array.isArray(tour.inclusions) && tour.inclusions.map((inclusion: string, index: number) => (
+                  {Array.isArray(inclusions) && inclusions.map((inclusion: string, index: number) => (
                     <li key={index} className="flex items-start gap-3 text-gray-700">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{inclusion}</span>
@@ -244,8 +258,8 @@ export function TourDetails({ tour }: TourDetailsProps) {
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Exclusions</h2>
                 <ul className="space-y-3">
-                  {Array.isArray(tour.exclusions) && tour.exclusions.length > 0 ? (
-                    tour.exclusions.map((exclusion: string, index: number) => (
+                  {Array.isArray(exclusions) && exclusions.length > 0 ? (
+                    exclusions.map((exclusion: string, index: number) => (
                       <li key={index} className="flex items-start gap-3 text-gray-700">
                         <X className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
                         <span className="text-sm">{exclusion}</span>
@@ -262,11 +276,11 @@ export function TourDetails({ tour }: TourDetailsProps) {
             </div>
 
             {/* Know Before You Go */}
-            {Array.isArray(tour.know_before_you_go) && tour.know_before_you_go.length > 0 && (
+            {Array.isArray(know_before_you_go) && know_before_you_go.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Know Before You Go</h2>
                 <ul className="space-y-3">
-                  {tour.know_before_you_go.map((item: string, index: number) => (
+                  {know_before_you_go.map((item: string, index: number) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                       <p className="text-gray-700 text-sm">{item}</p>

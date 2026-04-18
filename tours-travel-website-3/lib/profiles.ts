@@ -15,6 +15,7 @@ export async function upsertProfile({ id, email, fullName, phone }: { id: string
       email,
       full_name: fullName,
       phone,
+      role: 'user',
     }),
   });
   let data = null;

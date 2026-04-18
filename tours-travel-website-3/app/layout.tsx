@@ -3,9 +3,8 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { PerformanceMonitor } from "@/components/performance-monitor"
+import { LayoutShell } from "@/components/layout-shell"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -115,9 +114,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="bg-white text-gray-900 antialiased" suppressHydrationWarning>
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
         <PerformanceMonitor />
         <Script id="service-worker" strategy="afterInteractive">
           {`

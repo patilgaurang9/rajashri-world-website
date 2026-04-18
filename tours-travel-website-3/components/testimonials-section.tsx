@@ -10,28 +10,49 @@ import { testimonials } from "@/lib/data"
 
 export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [dbReviews, setDbReviews] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch("/api/reviews", { cache: "no-store" })
+      const data = await res.json()
+      console.log(data.reviews)
+      if (data.reviews && data.reviews.length > 0) {
+        setDbReviews(data.reviews)
+      } else {
+        setDbReviews(testimonials) // Fallback to local data
+      }
+    } catch (err) {
+      setDbReviews(testimonials)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
+    if (dbReviews.length === 0) return
+    setCurrentIndex((curr) => (curr + 1) % dbReviews.length)
   }
 
   const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    if (dbReviews.length === 0) return
+    setCurrentIndex((curr) => (curr - 1 + dbReviews.length) % dbReviews.length)
   }
 
+  // Fetch reviews exactly once on mount
   useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false)
-    }, 800)
-
-    const interval = setInterval(nextTestimonial, 4500)
-
-    return () => {
-      clearTimeout(loadingTimer)
-      clearInterval(interval)
-    }
+    fetchReviews()
   }, [])
+
+  // Start the carousel interval only when reviews are loaded
+  useEffect(() => {
+    if (dbReviews.length === 0) return
+    const interval = setInterval(() => {
+      setCurrentIndex((curr) => (curr + 1) % dbReviews.length)
+    }, 4500)
+    return () => clearInterval(interval)
+  }, [dbReviews])
 
   return (
     <section className="relative py-16 md:py-20 overflow-hidden">
@@ -65,14 +86,14 @@ export function TestimonialsSection() {
                   <div className="rounded-3xl p-1.5">
                     <div className="relative h-full w-full rounded-[24px] overflow-hidden">
                       <Image
-                        src={testimonials[currentIndex].avatar || "/placeholder.svg"}
-                        alt={testimonials[currentIndex].name}
+                        src={dbReviews[currentIndex]?.avatar || "/placeholder.svg"}
+                        alt={dbReviews[currentIndex]?.name || "Reviewer"}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 280px"
                       />
                       <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1.5 text-black text-sm font-semibold shadow-lg">
-                        {testimonials[currentIndex].name}
+                        {dbReviews[currentIndex]?.name}
                       </div>
                     </div>
                   </div>
@@ -82,23 +103,22 @@ export function TestimonialsSection() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${
-                            i < testimonials[currentIndex].rating
+                          className={`h-4 w-4 ${i < dbReviews[currentIndex]?.rating
                               ? "fill-orange-500 text-orange-500"
                               : "fill-gray-200 text-gray-200"
-                          }`}
+                            }`}
                         />
                       ))}
-                      <span className="ml-2 text-sm text-gray-600">({testimonials[currentIndex].rating}/5)</span>
+                      <span className="ml-2 text-sm text-gray-600">({dbReviews[currentIndex]?.rating}/5)</span>
                     </div>
 
                     <blockquote className="text-base sm:text-lg text-gray-800 leading-relaxed mb-4">
-                      "{testimonials[currentIndex].content}"
+                      "{dbReviews[currentIndex]?.content}"
                     </blockquote>
 
                     <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      {testimonials[currentIndex].location}
+                      {dbReviews[currentIndex]?.location}
                     </div>
 
                     <div className="flex items-center gap-2 mt-5">

@@ -47,14 +47,18 @@ export function TourCard({ tour }: TourCardProps) {
     if (startDate && endDate) return `${startDate} - ${endDate}`;
     return startDate || endDate || "Dates available on request";
   }
-  return (
-    <>
-      <Link href={`/tours/${tour.slug}`} className="block group">
-        <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-2xl p-2">
-          <div className="relative overflow-hidden rounded-xl">
-            <Image
-              src={tour.gallery?.[0] || "/placeholder.svg"}
-              alt={tour.title}
+    const gallery = typeof tour.gallery === 'string' 
+      ? JSON.parse(tour.gallery || '[]') 
+      : (tour.gallery || []);
+
+    return (
+      <>
+        <Link href={`/tours/${tour.slug}`} className="block group">
+          <Card className="bg-white border-gray-200 hover:border-orange-300 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-xl h-full rounded-2xl p-2">
+            <div className="relative overflow-hidden rounded-xl">
+              <Image
+                src={gallery?.[0] || "/placeholder.svg"}
+                alt={tour.title}
               width={400}
               height={250}
               className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-300"

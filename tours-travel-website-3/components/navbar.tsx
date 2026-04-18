@@ -14,7 +14,7 @@ import { AuthModal } from "@/components/auth-modal"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navigation = [
@@ -32,8 +32,8 @@ export function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false)
   const pathname = usePathname()
   const isTransparent = false
-  // Use the custom hook to get auth state (does not expose JWT)
-  const { isAuthenticated, loading } = useAuth();
+  // Use the custom hook to get auth state and role (does not expose JWT)
+  const { isAuthenticated, loading, role } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -147,6 +147,17 @@ export function Navbar() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {role === 'admin' && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/admin" className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Admin Panel
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -236,6 +247,17 @@ export function Navbar() {
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          {role === 'admin' && (
+                            <>
+                              <DropdownMenuItem asChild>
+                                <Link href="/admin" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                                  <Shield className="w-4 h-4" />
+                                  Admin Panel
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </>
+                          )}
                           <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

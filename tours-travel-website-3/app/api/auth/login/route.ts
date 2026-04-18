@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
+import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -12,7 +12,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { email, password } = schema.parse(body);
 
-    const { data, error } = await supabaseServer.auth.signInWithPassword({ email, password });
+    // Create a fresh client for login to avoid corrupting the singleton's auth state
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
     // Set JWT in HTTP-only cookie

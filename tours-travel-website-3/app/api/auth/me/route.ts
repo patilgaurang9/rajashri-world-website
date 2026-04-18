@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 
 // This endpoint checks if the user is authenticated by verifying the JWT with Supabase.
+// Also fetches the user's role from the profiles table.
 export async function GET(req: NextRequest) {
   const token = req.cookies.get('sb-access-token')?.value;
   let response;
@@ -15,7 +16,26 @@ export async function GET(req: NextRequest) {
     if (error || !data?.user) {
       response = NextResponse.json({ authenticated: false }, { status: 401 });
     } else {
-      response = NextResponse.json({ authenticated: true, email: data.user.email });
+      // Fetch user role from profiles table using service role key directly via REST
+      // This avoids any issues with the supabaseServer client's auth state
+      const profileRes = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profiles?id=eq.${data.user.id}&select=role,full_name`,
+        {
+          headers: {
+            'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
+          },
+        }
+      );
+      const profiles = await profileRes.json();
+      const profile = Array.isArray(profiles) && profiles.length > 0 ? profiles[0] : null;
+
+      response = NextResponse.json({
+        authenticated: true,
+        email: data.user.email,
+        role: profile?.role || 'user',
+        fullName: profile?.full_name || '',
+      });
     }
   }
   // Set all no-cache headers

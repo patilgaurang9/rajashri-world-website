@@ -20,6 +20,7 @@ function FeaturedToursContent() {
       const { data, error } = await supabase
         .from('tours')
         .select('*')
+        .order('id', { ascending: false })
         .limit(4);
       if (!error && isMounted) {
         setFeaturedTours(data || []);

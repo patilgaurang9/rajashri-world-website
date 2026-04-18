@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 import { supabaseServer } from '@/lib/supabase-server';
 import { z } from 'zod';
+import { upsertProfile } from '@/lib/profiles';
 
 const schema = z.object({
   email: z.string().email(),
@@ -9,13 +11,12 @@ const schema = z.object({
   phone: z.string().min(7),
 });
 
-import { upsertProfile } from '@/lib/profiles';
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { email, password, fullName, phone } = schema.parse(body);
 
+    // Use service role client ONLY for admin.createUser (doesn't corrupt auth state)
     const { data, error } = await supabaseServer.auth.admin.createUser({
       email,
       password,
@@ -25,8 +26,13 @@ export async function POST(req: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-    // Sign in to get JWT
-    const { data: signInData, error: signInError } = await supabaseServer.auth.signInWithPassword({ email, password });
+    // Use a FRESH client for signInWithPassword to avoid corrupting the singleton
+    const supabaseFresh = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const { data: signInData, error: signInError } = await supabaseFresh.auth.signInWithPassword({ email, password });
     if (signInError) return NextResponse.json({ error: signInError.message }, { status: 400 });
 
     // Upsert user profile in 'profiles' table
