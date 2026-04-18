@@ -6,7 +6,11 @@ export async function POST(req: NextRequest) {
   let query = supabase.from('tours').select('*');
 
   if (minPrice !== undefined && maxPrice !== undefined) {
-    query = query.gte('price_with_flight', minPrice).lte('price_with_flight', maxPrice);
+    if (minPrice === 0 && maxPrice >= 500000) {
+      // Default wide open filter, do not filter by price to include "Price on request" tours
+    } else {
+      query = query.or(`and(price_with_flight.gte.${minPrice},price_with_flight.lte.${maxPrice}),and(price_without_flight.gte.${minPrice},price_without_flight.lte.${maxPrice})`);
+    }
   }
   if (duration) {
     if (duration === '1-3') query = query.gte('duration_days', 1).lte('duration_days', 3);

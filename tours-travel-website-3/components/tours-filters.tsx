@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 
 export function ToursFilters({ onApply }: { onApply?: (filters: { minPrice: number, maxPrice: number, duration: string, startDate?: string, endDate?: string }) => void }) {
-  const [priceRange, setPriceRange] = useState([0, 100000])
+  const [priceRange, setPriceRange] = useState([0, 500000])
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [duration, setDuration] = useState("")
@@ -45,8 +45,8 @@ export function ToursFilters({ onApply }: { onApply?: (filters: { minPrice: numb
                 value={priceRange}
                 onValueChange={setPriceRange}
                 min={0}
-                max={100000}
-                step={1000}
+                max={500000}
+                step={5000}
                 className="w-full [&_[role=slider]]:bg-black [&_[data-slot=slider-range]]:bg-black [&_[data-slot=slider-track]]:bg-gray-200"
               />
               <div className="flex items-center justify-between text-sm font-medium">

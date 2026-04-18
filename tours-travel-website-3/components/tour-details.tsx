@@ -154,27 +154,37 @@ export function TourDetails({ tour }: TourDetailsProps) {
               )}
 
               {/* Quick Features */}
-              <div className="flex flex-wrap gap-4 text-sm">
-                <div className="flex items-center gap-2 text-green-600">
-                  <Car className="h-4 w-4" />
-                  <span>Transfer Included</span>
+              {Array.isArray(inclusions) && inclusions.length > 0 && (
+                <div className="flex flex-wrap gap-4 text-sm mt-4">
+                  {inclusions.some((i: string) => i.toLowerCase().includes("transfer") || i.toLowerCase().includes("transport") || i.toLowerCase().includes("flight")) && (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <Car className="h-4 w-4" />
+                      <span>Transfer Included</span>
+                    </div>
+                  )}
+                  {inclusions.some((i: string) => i.toLowerCase().includes("meal") || i.toLowerCase().includes("breakfast") || i.toLowerCase().includes("dinner") || i.toLowerCase().includes("lunch")) && (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <Utensils className="h-4 w-4" />
+                      <span>Meals Included</span>
+                    </div>
+                  )}
+                  {inclusions.some((i: string) => i.toLowerCase().includes("sightseeing") || i.toLowerCase().includes("guide")) && (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <Camera className="h-4 w-4" />
+                      <span>Sightseeing Included</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-2 text-green-600">
-                  <Utensils className="h-4 w-4" />
-                  <span>Meals Included</span>
-                </div>
-                <div className="flex items-center gap-2 text-green-600">
-                  <Camera className="h-4 w-4" />
-                  <span>Sightseeing Included</span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Overview */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
-              <p className="text-gray-700 leading-relaxed">{tour.description}</p>
-            </div>
+            {tour.description && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
+                <p className="text-gray-700 leading-relaxed">{tour.description}</p>
+              </div>
+            )}
 
             {/* Highlights */}
             {Array.isArray(highlights) && highlights.length > 0 && (
@@ -242,38 +252,37 @@ export function TourDetails({ tour }: TourDetailsProps) {
             )}
 
             {/* Inclusions/Exclusions */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Inclusions</h2>
-                <ul className="space-y-3">
-                  {Array.isArray(inclusions) && inclusions.map((inclusion: string, index: number) => (
-                    <li key={index} className="flex items-start gap-3 text-gray-700">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{inclusion}</span>
-                    </li>
-                  ))}
-                </ul>
+            {(Array.isArray(inclusions) && inclusions.length > 0 || Array.isArray(exclusions) && exclusions.length > 0) && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {Array.isArray(inclusions) && inclusions.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-sm">
+                    <h2 className="text-xl font-bold mb-4 text-gray-900">Inclusions</h2>
+                    <ul className="space-y-3">
+                      {inclusions.map((inclusion: string, index: number) => (
+                        <li key={index} className="flex items-start gap-3 text-gray-700">
+                          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">{inclusion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {Array.isArray(exclusions) && exclusions.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-sm">
+                    <h2 className="text-xl font-bold mb-4 text-gray-900">Exclusions</h2>
+                    <ul className="space-y-3">
+                      {exclusions.map((exclusion: string, index: number) => (
+                        <li key={index} className="flex items-start gap-3 text-gray-700">
+                          <X className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">{exclusion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-              
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Exclusions</h2>
-                <ul className="space-y-3">
-                  {Array.isArray(exclusions) && exclusions.length > 0 ? (
-                    exclusions.map((exclusion: string, index: number) => (
-                      <li key={index} className="flex items-start gap-3 text-gray-700">
-                        <X className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{exclusion}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="flex items-start gap-3 text-gray-500">
-                      <X className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">No exclusions listed</span>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            </div>
+            )}
 
             {/* Know Before You Go */}
             {Array.isArray(know_before_you_go) && know_before_you_go.length > 0 && (
@@ -297,15 +306,21 @@ export function TourDetails({ tour }: TourDetailsProps) {
               {/* Pricing */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Price</h3>
-                {displayPrice != null ? (
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Price</span>
-                    <span className="text-xl font-bold text-orange-600">
-                      ₹{Number(displayPrice).toLocaleString("en-IN")}
-                    </span>
+                {displayPrice && Number(displayPrice) > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Starting from</span>
+                      <span className="text-xl font-bold text-orange-600">
+                        {tour.currency} {Number(displayPrice).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">*Per person on twin sharing basis</p>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between bg-orange-50 p-4 rounded-xl border border-orange-100">
+                    <span className="text-orange-800 font-bold tracking-wide">Price on Request</span>
                   </div>
-                ) : null}
-                <p className="text-xs text-gray-500 mt-2">*Per person on twin sharing basis</p>
+                )}
               </div>
 
               {/* Download Brochure with Preview */}

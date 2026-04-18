@@ -18,7 +18,7 @@ export async function ContactInfo() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white border-gray-200 shadow-md rounded-2xl overflow-hidden h-full">
+      <Card className="bg-white border-gray-200 shadow-md rounded-2xl overflow-hidden">
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-4 text-gray-900">Contact Information</h3>
           <div className="space-y-6">
