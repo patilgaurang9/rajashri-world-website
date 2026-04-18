@@ -10,6 +10,7 @@ const sidebarNav = [
   { name: "Reviews", href: "/admin/reviews", icon: MessageSquare },
   { name: "Enquiries", href: "/admin/enquiries", icon: MessageSquare },
   { name: "Custom Bookings", href: "/admin/custom-bookings", icon: FileText },
+  { name: "Settings", href: "/admin/settings", icon: Menu },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

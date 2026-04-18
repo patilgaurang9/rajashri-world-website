@@ -23,6 +23,7 @@ interface Tour {
   know_before_you_go: string[]
   gallery: string[]
   brochure_url: string
+  days_breakdown: any[]
 }
 
 const slugify = (value: string) =>
@@ -52,6 +53,7 @@ const NEW_TOUR_TEMPLATE: Tour = {
   know_before_you_go: [],
   gallery: [],
   brochure_url: "",
+  days_breakdown: [],
 }
 
 // Custom Confirmation Modal
@@ -237,6 +239,40 @@ const ListEditor = ({ label, items, onChange }: { label: string, items: string[]
   );
 };
 
+const DaysBreakdownEditor = ({ items, onChange }: { items: any[], onChange: (newItems: any[]) => void }) => {
+  const addItem = () => onChange([...items, { city: "", days: 1 }]);
+  const removeItem = (index: number) => onChange(items.filter((_, i) => i !== index));
+  const updateItem = (index: number, field: string, value: any) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    onChange(newItems);
+  };
+
+  return (
+    <div className="admin-form-group admin-form-grid-full mt-8">
+      <label className="admin-label flex items-center justify-between">
+        <span>Days Breakdown (e.g., Yamunotri 3 Days)</span>
+      </label>
+      <div className="space-y-4">
+        {items.map((item, index) => (
+          <div key={index} className="flex gap-4 items-center bg-gray-50/50 p-4 rounded-2xl border border-gray-100 relative">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input className="admin-input !bg-white" value={item.city || ""} onChange={(e) => updateItem(index, "city", e.target.value)} placeholder="City Name" />
+              <input type="number" className="admin-input !bg-white" value={item.days || ""} onChange={(e) => updateItem(index, "days", parseInt(e.target.value) || 1)} placeholder="Days (e.g. 3)" />
+            </div>
+            <button className="p-3 text-red-400 hover:text-red-600 bg-white rounded-xl shadow-sm border border-gray-100" onClick={() => removeItem(index)}>
+              <Trash2 size={20} />
+            </button>
+          </div>
+        ))}
+        <button className="w-full py-4 border-2 border-dashed border-gray-50 rounded-2xl text-gray-400 hover:border-black hover:text-black hover:bg-white transition-all flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-[0.2em]" onClick={addItem}>
+          <Plus size={16} /> Add City Breakdown
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const ItineraryEditor = ({ items, onChange }: { items: any[], onChange: (newItems: any[]) => void }) => {
   const addItem = () => onChange([...items, { day: items.length + 1, hotel: "", title: "", description: "" }]);
   const removeItem = (index: number) => {
@@ -322,6 +358,7 @@ export default function AdminToursPage() {
           know_before_you_go: typeof t.know_before_you_go === "string" ? JSON.parse(t.know_before_you_go || "[]") : (t.know_before_you_go || []),
           gallery: typeof t.gallery === "string" ? JSON.parse(t.gallery || "[]") : (t.gallery || []),
           itinerary: typeof t.itinerary === "string" ? JSON.parse(t.itinerary || "[]") : (t.itinerary || []),
+          days_breakdown: typeof t.days_breakdown === "string" ? JSON.parse(t.days_breakdown || "[]") : (t.days_breakdown || []),
         }))
         setTours(parsedTours)
       }
@@ -382,6 +419,9 @@ export default function AdminToursPage() {
       know_before_you_go: JSON.stringify(editingTour.know_before_you_go),
       gallery: JSON.stringify(editingTour.gallery),
       itinerary: JSON.stringify(editingTour.itinerary),
+      days_breakdown: JSON.stringify(editingTour.days_breakdown),
+      start_date: editingTour.start_date ? editingTour.start_date : null,
+      end_date: editingTour.end_date ? editingTour.end_date : null,
     }
 
     try {
@@ -473,6 +513,16 @@ export default function AdminToursPage() {
             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-[0.3em]">Logistics & Assets</h3>
           </div>
           <div className="space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="admin-form-group">
+                <label className="admin-label">Start Date</label>
+                <input type="date" className="admin-input" value={editingTour.start_date || ""} onChange={(e) => updateField("start_date", e.target.value)} />
+              </div>
+              <div className="admin-form-group">
+                <label className="admin-label">End Date</label>
+                <input type="date" className="admin-input" value={editingTour.end_date || ""} onChange={(e) => updateField("end_date", e.target.value)} />
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="admin-form-group">
                 <label className="admin-label">Duration (Days)</label>
@@ -536,6 +586,7 @@ export default function AdminToursPage() {
             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center font-black">05</div>
             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-[0.3em]">Guest Experience</h3>
           </div>
+          <DaysBreakdownEditor items={editingTour.days_breakdown} onChange={(items) => updateField("days_breakdown", items)} />
           <ItineraryEditor items={editingTour.itinerary} onChange={(items) => updateField("itinerary", items)} />
         </section>
       </div>
@@ -561,43 +612,45 @@ export default function AdminToursPage() {
       )}
 
       <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-gray-50/50 text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
-              <th className="px-10 py-8">Experience</th>
-              <th className="px-10 py-8">Location</th>
-              <th className="px-10 py-8">Valuation</th>
-              <th className="px-10 py-8 text-right">Control</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {tours.map((tour) => (
-              <tr key={tour.id} className="hover:bg-gray-50/40 transition-all group">
-                <td className="px-10 py-8">
-                  <div className="font-black text-lg text-gray-900 group-hover:text-black transition-colors">{tour.title}</div>
-                  <div className="text-[10px] text-gray-300 mt-1 font-bold tracking-widest">{tour.slug}</div>
-                </td>
-                <td className="px-10 py-8">
-                  <div className="flex items-center gap-2.5 text-sm font-bold text-gray-500">
-                    <MapPin size={16} className="text-gray-400" />
-                    {tour.location}
-                  </div>
-                </td>
-                <td className="px-10 py-8">
-                  <div className="text-lg font-black text-black">{tour.currency} {tour.price_with_flight || tour.price_without_flight}</div>
-                  <div className="text-[10px] text-gray-400 mt-1 font-bold">{tour.duration_days} Days / {tour.duration_nights} Nights</div>
-                </td>
-                <td className="px-10 py-8">
-                  <div className="flex justify-end gap-3 transition-all">
-                    <a href={`/tours/${tour.slug}`} target="_blank" className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Eye size={20} /></a>
-                    <button onClick={() => handleEdit(tour)} className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Pencil size={20} /></button>
-                    <button onClick={() => tour.id && setDeleteModal({ isOpen: true, id: tour.id, title: tour.title })} className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Trash2 size={20} /></button>
-                  </div>
-                </td>
+        <div className="table-container">
+          <table className="w-full text-left table-responsive">
+            <thead>
+              <tr className="bg-gray-50/50 text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                <th className="px-10 py-8">Experience</th>
+                <th className="px-10 py-8">Location</th>
+                <th className="px-10 py-8">Valuation</th>
+                <th className="px-10 py-8 text-right">Control</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {tours.map((tour) => (
+                <tr key={tour.id} className="hover:bg-gray-50/40 transition-all group">
+                  <td className="px-10 py-8">
+                    <div className="font-black text-lg text-gray-900 group-hover:text-black transition-colors">{tour.title}</div>
+                    <div className="text-[10px] text-gray-300 mt-1 font-bold tracking-widest">{tour.slug}</div>
+                  </td>
+                  <td className="px-10 py-8">
+                    <div className="flex items-center gap-2.5 text-sm font-bold text-gray-500">
+                      <MapPin size={16} className="text-gray-400" />
+                      {tour.location}
+                    </div>
+                  </td>
+                  <td className="px-10 py-8">
+                    <div className="text-lg font-black text-black">{tour.currency} {tour.price_with_flight || tour.price_without_flight}</div>
+                    <div className="text-[10px] text-gray-400 mt-1 font-bold">{tour.duration_days} Days / {tour.duration_nights} Nights</div>
+                  </td>
+                  <td className="px-10 py-8">
+                    <div className="flex justify-end gap-3 transition-all">
+                      <a href={`/tours/${tour.slug}`} target="_blank" className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Eye size={20} /></a>
+                      <button onClick={() => handleEdit(tour)} className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Pencil size={20} /></button>
+                      <button onClick={() => tour.id && setDeleteModal({ isOpen: true, id: tour.id, title: tour.title })} className="p-3 bg-gray-50 text-black rounded-2xl hover:bg-gray-100 transition-colors"><Trash2 size={20} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ConfirmationModal 
