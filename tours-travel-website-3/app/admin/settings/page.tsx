@@ -117,7 +117,7 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      </div>
+
 
       <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-8">
         <h2 className="text-xl font-bold flex items-center gap-2 border-b border-gray-100 pb-4">
