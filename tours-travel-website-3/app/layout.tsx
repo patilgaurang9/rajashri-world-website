@@ -119,15 +119,26 @@ export default function RootLayout({
         <Script id="service-worker" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                  .then(function(registration) {
-                    console.log('SW registered: ', registration);
-                  })
-                  .catch(function(registrationError) {
-                    console.log('SW registration failed: ', registrationError);
-                  });
-              });
+              if (window.location.hostname === 'localhost') {
+                // Force unregister existing workers in dev to clear cache
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('SW unregistered for development');
+                  }
+                });
+              } else {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('SW registered: ', registration);
+                      registration.update();
+                    })
+                    .catch(function(registrationError) {
+                      console.log('SW registration failed: ', registrationError);
+                    });
+                });
+              }
             }
           `}
         </Script>

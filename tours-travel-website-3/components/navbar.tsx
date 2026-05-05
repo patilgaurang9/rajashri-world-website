@@ -9,13 +9,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { AuthModal } from "@/components/auth-modal"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, X, Shield } from "lucide-react"
+import { Menu, X, Shield, Plane } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -30,12 +32,15 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
   const isTransparent = false
   // Use the custom hook to get auth state and role (does not expose JWT)
   const { isAuthenticated, loading, role } = useAuth();
 
   useEffect(() => {
+    setMounted(true)
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
@@ -77,201 +82,146 @@ export function Navbar() {
 
   return (
     <>
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white backdrop-blur-xl shadow-sm border-b border-black/5"
-      role="navigation"
-      aria-label="Main Navigation"
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo - Left */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center space-x-2 group">
-              <Image
-                src="/images/WhatsApp_Image_2025-08-04_at_18.03.33_50e467a4-removebg-preview.png"
-                alt="Wanderlust Tours Logo"
-                width={180}
-                height={60}
-                className="h-14 w-auto transition-transform group-hover:scale-105"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Desktop Navigation - Center */}
-<div
-  className={`hidden md:flex items-center absolute left-1/2 transform -translate-x-1/2 rounded-full p-1.5 transition-all duration-300 ${
-    isTransparent
-      ? "bg-gray-400/26 backdrop-blur-lg"
-      : "bg-gray-200/72 backdrop-blur-lg shadow-sm"
-  }`}
->
-  {navigation.map((item) => (
-    <Link
-      key={item.name}
-      href={item.href}
-      className={`text-sm lg:text-base font-medium tracking-wide px-5 py-2 rounded-full transition-all duration-200 ${
-        pathname === item.href
-          ? "bg-black text-white shadow-sm"
-          : isTransparent
-            ? "text-white/90 hover:text-white hover:bg-white/15"
-            : "text-gray-700 hover:text-gray-900 hover:bg-white/70"
-      }`}
-    >
-      {item.name}
-    </Link>
-  ))}
-</div>
-
-{/* Auth/Profile - Right */}
-<div className="hidden md:flex items-center space-x-4 ml-auto">
-  {/* Auth/Profile */}
-  {!isAuthenticated && (
-    <Button
-      size="lg"
-      className="px-6 py-2 text-base font-semibold rounded-full transition-all duration-200 bg-black hover:bg-black/90 text-white border border-black"
-      onClick={() => setAuthOpen(true)}
-    >
-      Sign In
-    </Button>
-  )}
-  {!loading && isAuthenticated && userInitial && (
-    <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center justify-center focus:outline-none">
-          <Avatar>
-            <AvatarFallback className="bg-orange-500 text-white font-bold">
-              {userInitial}
-            </AvatarFallback>
-          </Avatar>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {role === 'admin' && (
-          <>
-            <DropdownMenuItem asChild>
-              <Link href="/admin" className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                Admin Panel
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white backdrop-blur-xl shadow-sm border-b border-black/5"
+        role="navigation"
+        aria-label="Main Navigation"
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo - Left */}
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex items-center space-x-2 group">
+                <Image
+                  src="/images/WhatsApp_Image_2025-08-04_at_18.03.33_50e467a4-removebg-preview.png"
+                  alt="Wanderlust Tours Logo"
+                  width={180}
+                  height={60}
+                  className="h-14 w-auto transition-transform group-hover:scale-105"
+                  priority
+                />
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-          </>
-        )}
-        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )}
-</div>
+            </div>
 
+            {/* Desktop Navigation - Center */}
+            <div className="hidden md:flex items-center absolute left-1/2 transform -translate-x-1/2 rounded-full p-1.5 bg-gray-200/70 backdrop-blur-lg shadow-sm">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`text-sm lg:text-base font-medium tracking-wide px-5 py-2 rounded-full transition-all duration-200 ${
+                    pathname === item.href
+                      ? "bg-black text-white shadow-sm"
+                      : "text-gray-700 hover:text-gray-900 hover:bg-white/70"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
-              onClick={() => setIsOpen(!isOpen)}
-              className={`${isTransparent ? "text-white" : "text-orange-600 hover:text-orange-500"} focus:ring-2 focus:ring-orange-300 focus:outline-none`}
-            >
-              {isOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
-            </Button>
-          </div>
-        </div>
-
-                  {/* Mobile Navigation */}
-          {isOpen && (
-            <>
-              {/* Backdrop for focus and accessibility */}
-              <div
-                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
-                aria-hidden="true"
-                onClick={() => setIsOpen(false)}
-              />
-              <div
-                id="mobile-menu"
-                className="fixed top-0 left-0 right-0 z-50 md:hidden bg-white border-b border-gray-200 shadow-lg animate-fadeIn w-full"
-                role="dialog"
-                aria-modal="true"
-              >
-                <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100">
-                  <Link href="/" className="flex items-center space-x-2" tabIndex={0} aria-label="Home">
-                    <Image
-                      src="/images/WhatsApp_Image_2025-08-04_at_18.03.33_50e467a4-removebg-preview.png"
-                      alt="Wanderlust Tours Logo"
-                      width={140}
-                      height={40}
-                      className="h-10 w-auto"
-                      priority
-                    />
-                  </Link>
+          {/* Auth/Profile - Right */}
+          <div className="hidden md:flex items-center space-x-4 ml-auto min-w-[120px] justify-end">
+            {!mounted ? (
+              <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-full" />
+            ) : (
+              <>
+                {!isAuthenticated ? (
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close menu"
-                    onClick={() => setIsOpen(false)}
-                    className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+                    size="lg"
+                    className="px-6 py-2 text-base font-semibold rounded-full transition-all duration-200 bg-black hover:bg-black/90 text-white border border-black"
+                    onClick={() => setAuthOpen(true)}
                   >
-                    <X className="h-8 w-8" />
+                    Sign In
                   </Button>
-                </div>
-                <div className="px-4 pt-2 pb-6 space-y-2">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={`block w-full px-4 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 text-left focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                        pathname === item.href ? "text-orange-600 bg-orange-50" : "text-gray-900 hover:text-orange-600 hover:bg-orange-50"
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                      tabIndex={0}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                  <div className="pt-2">
-                    {!isAuthenticated && (
-                      <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-md text-lg font-semibold py-3 transition-all duration-200" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
-                        Login / Signup
-                      </Button>
-                    )}
-                    {!loading && isAuthenticated && (
-                      <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
-                        <DropdownMenuTrigger asChild>
-                          <button className="flex items-center justify-center w-full focus:outline-none">
-                            <Avatar>
-                              <AvatarFallback className="bg-orange-500 text-white font-bold">{userInitial}</AvatarFallback>
-                            </Avatar>
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {role === 'admin' && (
-                            <>
-                              <DropdownMenuItem asChild>
-                                <Link href="/admin" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                                  <Shield className="w-4 h-4" />
-                                  Admin Panel
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                            </>
-                          )}
-                          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </div>
-                </div>
+                ) : (
+                  userInitial && (
+                    <DropdownMenu open={profileOpen} onOpenChange={setProfileOpen}>
+                      <DropdownMenuTrigger asChild>
+                        <button className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-700 font-black text-lg hover:bg-orange-200 transition-all duration-300 shadow-sm border-2 border-orange-200/50">
+                          {userInitial}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-slate-100 shadow-2xl">
+                        <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 p-3">My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        {role === 'admin' && (
+                          <>
+                            <DropdownMenuItem className="rounded-xl p-3 font-bold text-slate-700 focus:bg-slate-50 cursor-pointer" onClick={() => router.push("/admin")}>
+                              Admin Dashboard
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-slate-50" />
+                          </>
+                        )}
+                        <DropdownMenuItem className="rounded-xl p-3 font-bold text-slate-700 focus:bg-slate-50 cursor-pointer" onClick={() => router.push("/profile")}>
+                          Profile Settings
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-xl p-3 font-bold text-slate-700 focus:bg-slate-50 cursor-pointer" onClick={() => router.push("/my-bookings")}>
+                          My Bookings
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem 
+                          className="rounded-xl p-3 font-bold text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer"
+                          onClick={handleLogout}
+                        >
+                          Sign Out
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )
+                )}
+              </>
+            )}
+          </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-orange-600 hover:text-orange-500 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+              >
+                {isOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
+              </Button>
+            </div>
+          </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden fixed inset-0 z-[60] bg-white animate-in slide-in-from-right duration-300">
+            <div className="p-4 border-b flex justify-between items-center h-16">
+              <span className="font-black text-xl tracking-tighter">RAJASHRI<span className="text-orange-600">WORLD</span></span>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                <X className="h-8 w-8" />
+              </Button>
+            </div>
+            <div className="p-8 space-y-6">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block text-2xl font-black uppercase tracking-widest text-slate-900 hover:text-orange-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="pt-8">
+                {mounted && !isAuthenticated && (
+                  <Button className="w-full h-16 rounded-2xl bg-slate-900 text-white font-black text-xl" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
+                    Sign In
+                  </Button>
+                )}
               </div>
-            </>
-          )}
-      </div>
-    </nav>
-  {/* Auth Modal */}
-  {/* AuthModal opens for login/signup, closes on success or cancel */}
-  <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+            </div>
+          </div>
+        )}
+        </div>
+      </nav>
+      {/* Auth Modal */}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>
   )
 }

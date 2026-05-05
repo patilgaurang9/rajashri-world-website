@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { MapPin, Calendar, Clock, Save, X, Pencil, ExternalLink, Plus, Trash2, ChevronLeft, Upload, Loader2, Eye, AlertTriangle, Cloud, FileText, CheckCircle2 } from "lucide-react"
+import { compressImage } from "@/lib/image-utils"
 
 interface Tour {
   id?: string
@@ -22,6 +23,7 @@ interface Tour {
   exclusions: string[]
   know_before_you_go: string[]
   gallery: string[]
+  video_urls: string[]
   brochure_url: string
   days_breakdown: any[]
 }
@@ -52,6 +54,7 @@ const NEW_TOUR_TEMPLATE: Tour = {
   exclusions: [],
   know_before_you_go: [],
   gallery: [],
+  video_urls: [],
   brochure_url: "",
   days_breakdown: [],
 }
@@ -97,10 +100,16 @@ const FileUpload = ({ label, currentUrl, onUpload, onClear, bucket = "brochures"
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("bucket", bucket);
     try {
+      let fileToUpload: File | Blob = file;
+      if (file.type.startsWith("image/")) {
+        fileToUpload = await compressImage(file);
+      }
+      
+      const formData = new FormData();
+      formData.append("file", fileToUpload, file.name);
+      formData.append("bucket", bucket);
+      
       const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
       const data = await res.json();
       if (data.url) onUpload(data.url);
@@ -152,59 +161,141 @@ const FileUpload = ({ label, currentUrl, onUpload, onClear, bucket = "brochures"
   );
 };
 
-// Gallery Editor (Grid max 5)
+// Gallery Editor (Unlimited photos)
 const GalleryEditor = ({ photos, onChange }: { photos: string[], onChange: (newPhotos: string[]) => void }) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (photos.length >= 5) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("bucket", "brochures");
-    try {
-      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) onChange([...photos, data.url]);
-    } catch (err) { alert("Upload error"); }
-    finally { setUploading(false); }
+    const newPhotos = [...photos];
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        let fileToUpload: File | Blob = file;
+        // Basic optimization for performance
+        if (file.type.startsWith("image/")) {
+          fileToUpload = await compressImage(file);
+        }
+        
+        const formData = new FormData();
+        formData.append("file", fileToUpload, file.name);
+        formData.append("bucket", "brochures");
+        
+        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (data.url) newPhotos.push(data.url);
+      } catch (err) { 
+        console.error("Upload error", err);
+      }
+    }
+    
+    onChange(newPhotos);
+    setUploading(false);
   };
 
   return (
     <div className="admin-form-group admin-form-grid-full">
       <div className="flex items-center justify-between mb-4">
-        <label className="admin-label !mb-0">Photo Gallery ({photos.length}/5)</label>
+        <label className="admin-label !mb-0">Photo Gallery ({photos.length} photos)</label>
         <AssetStatus url={photos.find(p => !p.includes("supabase.co")) || "cloud"} />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-4">
         {photos.map((url, index) => (
-          <div key={index} className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-gray-100 group shadow-sm bg-white">
+          <div key={index} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-100 group shadow-sm bg-white">
             <img src={url} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
-            <div className="absolute top-2 right-2 z-10">
-              <button className="p-2 bg-white/90 text-red-500 rounded-lg shadow-sm hover:bg-red-500 hover:text-white transition-all" onClick={() => onChange(photos.filter((_, i) => i !== index))}>
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button className="p-2 bg-white text-red-500 rounded-lg shadow-md hover:bg-red-500 hover:text-white transition-all" onClick={() => onChange(photos.filter((_, i) => i !== index))}>
                 <Trash2 size={16} />
               </button>
             </div>
             {!url.includes("supabase.co") && !url.startsWith("http") && (
-              <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-orange-500 text-[8px] text-white font-bold rounded">LOCAL</div>
+              <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-orange-500 text-[8px] text-white font-bold rounded uppercase">Local</div>
             )}
+            <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
+              #{index + 1}
+            </div>
           </div>
         ))}
-        {photos.length < 5 && (
-          <button 
-            className="aspect-[4/3] rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-black hover:text-black hover:bg-gray-50 transition-all"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-          >
-            {uploading ? <Loader2 className="animate-spin" size={24} /> : <Plus size={24} />}
-            <span className="text-[10px] font-bold uppercase tracking-widest">{uploading ? "Uploading..." : "Add Photo"}</span>
-          </button>
-        )}
+        <button 
+          className="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-black hover:text-black hover:bg-gray-50 transition-all"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? <Loader2 className="animate-spin" size={24} /> : <Plus size={24} />}
+          <span className="text-[10px] font-bold uppercase tracking-widest">{uploading ? "Uploading..." : "Add Photos"}</span>
+        </button>
       </div>
-      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleUpload} />
+      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" multiple onChange={handleUpload} />
+    </div>
+  );
+};
+
+// Video Editor
+const VideoEditor = ({ videos, onChange }: { videos: string[], onChange: (newVideos: string[]) => void }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    setUploading(true);
+    const newVideos = [...videos];
+    
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      formData.append("bucket", "brochures"); // Using same bucket for now
+      try {
+        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (data.url) newVideos.push(data.url);
+      } catch (err) { console.error("Video upload error", err); }
+    }
+    
+    onChange(newVideos);
+    setUploading(false);
+  };
+
+  return (
+    <div className="admin-form-group admin-form-grid-full mt-12">
+      <div className="flex items-center justify-between mb-4">
+        <label className="admin-label !mb-0">Video Gallery ({videos.length} videos)</label>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {videos.map((url, index) => (
+          <div key={index} className="relative aspect-video rounded-2xl overflow-hidden border border-gray-100 group shadow-sm bg-black">
+            <video src={url} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all pointer-events-none">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
+              </div>
+            </div>
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button className="p-2 bg-white text-red-500 rounded-lg shadow-md hover:bg-red-500 hover:text-white transition-all" onClick={() => onChange(videos.filter((_, i) => i !== index))}>
+                <Trash2 size={16} />
+              </button>
+            </div>
+            <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
+              Video #{index + 1}
+            </div>
+          </div>
+        ))}
+        <button 
+          className="aspect-video rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-black hover:text-black hover:bg-gray-50 transition-all"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
+          <span className="text-[10px] font-bold uppercase tracking-widest">{uploading ? "Uploading..." : "Add Videos"}</span>
+        </button>
+      </div>
+      <input type="file" ref={fileInputRef} className="hidden" accept="video/*" multiple onChange={handleUpload} />
     </div>
   );
 };
@@ -357,6 +448,7 @@ export default function AdminToursPage() {
           exclusions: typeof t.exclusions === "string" ? JSON.parse(t.exclusions || "[]") : (t.exclusions || []),
           know_before_you_go: typeof t.know_before_you_go === "string" ? JSON.parse(t.know_before_you_go || "[]") : (t.know_before_you_go || []),
           gallery: typeof t.gallery === "string" ? JSON.parse(t.gallery || "[]") : (t.gallery || []),
+          video_urls: typeof t.video_urls === "string" ? JSON.parse(t.video_urls || "[]") : (t.video_urls || []),
           itinerary: typeof t.itinerary === "string" ? JSON.parse(t.itinerary || "[]") : (t.itinerary || []),
           days_breakdown: typeof t.days_breakdown === "string" ? JSON.parse(t.days_breakdown || "[]") : (t.days_breakdown || []),
         }))
@@ -418,6 +510,7 @@ export default function AdminToursPage() {
       exclusions: JSON.stringify(editingTour.exclusions),
       know_before_you_go: JSON.stringify(editingTour.know_before_you_go),
       gallery: JSON.stringify(editingTour.gallery),
+      video_urls: JSON.stringify(editingTour.video_urls),
       itinerary: JSON.stringify(editingTour.itinerary),
       days_breakdown: JSON.stringify(editingTour.days_breakdown),
       start_date: editingTour.start_date ? editingTour.start_date : null,
@@ -564,6 +657,7 @@ export default function AdminToursPage() {
             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-[0.3em]">Visual Assets</h3>
           </div>
           <GalleryEditor photos={editingTour.gallery} onChange={(photos) => updateField("gallery", photos)} />
+          <VideoEditor videos={editingTour.video_urls} onChange={(videos) => updateField("video_urls", videos)} />
         </section>
 
         {/* Section 4: Particulars */}

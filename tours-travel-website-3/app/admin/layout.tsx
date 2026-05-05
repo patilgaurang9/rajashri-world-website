@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { Map, LogOut, Menu, X, ChevronRight, MessageSquare, FileText } from "lucide-react"
+import { Map, LogOut, Menu, X, ChevronRight, MessageSquare, FileText, Video, Star } from "lucide-react"
 
 const sidebarNav = [
   { name: "Tours", href: "/admin/tours", icon: Map },
+  { name: "Video Gallery", href: "/admin/gallery", icon: Video },
+  { name: "Pop Reels", href: "/admin/reels", icon: Star },
   { name: "Reviews", href: "/admin/reviews", icon: MessageSquare },
   { name: "Enquiries", href: "/admin/enquiries", icon: MessageSquare },
   { name: "Custom Bookings", href: "/admin/custom-bookings", icon: FileText },

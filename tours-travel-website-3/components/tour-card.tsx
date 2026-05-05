@@ -67,7 +67,7 @@ export function TourCard({ tour }: TourCardProps) {
           <div className="relative overflow-hidden rounded-xl">
             <Image
               src={firstImage}
-                alt={tour.title}
+              alt={tour.title}
               width={400}
               height={250}
               className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-300"
@@ -81,8 +81,8 @@ export function TourCard({ tour }: TourCardProps) {
               {tour.title}
             </h3>
             <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
-                <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>{formatDateRange(tour.start_date, tour.end_date)}</span>
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>{formatDateRange(tour.start_date, tour.end_date)}</span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 mb-3 gap-2">
               <div className="flex items-center gap-1">

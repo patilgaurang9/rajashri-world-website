@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Users, Star, Clock, CheckCircle, X, ChevronDown, ChevronUp, Plane, Utensils, Car, Camera, Eye } from "lucide-react"
+import { Calendar, MapPin, Users, Star, Clock, CheckCircle, X, ChevronDown, ChevronUp, Plane, Utensils, Car, Camera, Eye, Play, ChevronLeft, ChevronRight, Maximize2, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useState } from "react";
@@ -9,6 +9,32 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 
 interface TourDetailsProps {
   tour: any;
+}
+
+export function MediaItem({ media, title, priority = false }: { media: any, title: string, priority?: boolean }) {
+  if (!media) return null;
+  if (media.type === 'image') {
+    return (
+      <Image
+        src={media.url}
+        alt={title}
+        fill
+        className="object-cover hover:scale-105 transition-transform duration-700"
+        priority={priority}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
+    );
+  }
+  return (
+    <div className="relative w-full h-full bg-black">
+      <video src={media.url} className="w-full h-full object-cover" />
+      <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-all">
+        <div className="w-12 h-12 md:w-16 md:h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+          <Play className="w-5 h-5 md:w-6 md:h-6 text-white fill-white" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function TourDetails({ tour }: TourDetailsProps) {
@@ -34,10 +60,9 @@ export function TourDetails({ tour }: TourDetailsProps) {
       setName('');
       setEmail('');
       setPhone('');
-    } else {
-      // Optionally handle error
     }
   };
+
   const parseHelper = (data: any) => {
     if (typeof data === 'string') {
       try { return JSON.parse(data); } catch (e) { return []; }
@@ -46,6 +71,7 @@ export function TourDetails({ tour }: TourDetailsProps) {
   };
 
   const gallery = parseHelper(tour.gallery);
+  const video_urls = parseHelper(tour.video_urls);
   const highlights = parseHelper(tour.highlights);
   const itinerary = parseHelper(tour.itinerary);
   const inclusions = parseHelper(tour.inclusions);
@@ -53,8 +79,15 @@ export function TourDetails({ tour }: TourDetailsProps) {
   const know_before_you_go = parseHelper(tour.know_before_you_go);
   const days_breakdown = parseHelper(tour.days_breakdown);
 
-  const [openDays, setOpenDays] = useState<number[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [openDays, setOpenDays] = useState<number[]>([0]); // Open first day by default
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
+  const allMedia = [
+    ...gallery.map((url: string) => ({ type: 'image', url })),
+    ...video_urls.map((url: string) => ({ type: 'video', url }))
+  ];
+
   const displayPrice = tour.price_without_flight != null ? tour.price_without_flight : tour.price_with_flight;
   
   const toggleDay = (idx: number) => {
@@ -63,399 +96,534 @@ export function TourDetails({ tour }: TourDetailsProps) {
     );
   };
 
+  const openLightbox = (index: number) => {
+    setActiveMediaIndex(index);
+    setLightboxOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero Image Gallery Section */}
-      <div>
-        {/* Add top padding to prevent overlap with fixed navbar */}
-        <div className="container mx-auto px-4 pt-24">
-          {/* Image Gallery */}
-          {gallery.length === 1 ? (
-            <div className="w-full h-96 rounded-2xl overflow-hidden relative">
-              <Image
-                src={gallery[0] || "/placeholder.svg"}
-                alt={tour.title}
-                fill
-                className="object-cover cursor-pointer hover:opacity-90 transition-opacity"
-              />
-            </div>
-          ) : (
-            <div className="grid grid-cols-4 gap-2 h-96 rounded-2xl overflow-hidden">
-              {/* Main large image - always gallery[0] */}
-              <div className="col-span-2 row-span-2 relative">
-                <Image
-                  src={gallery[0] || "/placeholder.svg"}
-                  alt={tour.title}
-                  fill
-                  className="object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                />
+      <div className="pt-28 pb-12 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-orange-600 font-bold text-xs uppercase tracking-[0.2em]">
+                <MapPin className="h-3.5 w-3.5" />
+                <span>{tour.location}</span>
               </div>
-              {/* Smaller images - remaining gallery images */}
-              {gallery.slice(1).map((image: string, index: number) => (
-                <div key={index + 1} className="relative cursor-pointer group">
-                  <Image
-                    src={image}
-                    alt={`${tour.title} ${index + 2}`}
-                    fill
-                    className="object-cover group-hover:opacity-90 transition-opacity"
-                  />
-                  {index === 3 && gallery.length > 5 && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-semibold">
-                      +{gallery.length - 5} more
+              <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight max-w-3xl">
+                {tour.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-6 text-slate-500 font-medium">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-slate-400" />
+                  <span>{tour.duration_days} Days / {tour.duration_nights} Nights</span>
+                </div>
+                {tour.location && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-slate-400" />
+                    <span>{tour.location}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="hidden md:flex flex-col items-end gap-2">
+              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Starting from</span>
+              <div className="text-3xl font-black text-slate-900">
+                {tour.currency} {Number(displayPrice).toLocaleString("en-IN")}
+              </div>
+            </div>
+          </div>
+
+          <div className="relative">
+            {allMedia.length === 0 ? (
+              <div className="w-full h-[300px] bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-400">
+                No media available
+              </div>
+            ) : allMedia.length === 1 ? (
+              <div 
+                className="w-full h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden relative cursor-pointer shadow-xl"
+                onClick={() => openLightbox(0)}
+              >
+                <MediaItem media={allMedia[0]} title={tour.title} priority />
+              </div>
+            ) : allMedia.length === 2 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
+                  <MediaItem media={allMedia[0]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
+                  <MediaItem media={allMedia[1]} title={tour.title} />
+                </div>
+              </div>
+            ) : allMedia.length === 3 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                <div className="md:col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
+                  <MediaItem media={allMedia[0]} title={tour.title} />
+                </div>
+                <div className="grid grid-rows-2 gap-3 h-full">
+                  <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
+                    <MediaItem media={allMedia[1]} title={tour.title} />
+                  </div>
+                  <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}>
+                    <MediaItem media={allMedia[2]} title={tour.title} />
+                  </div>
+                </div>
+              </div>
+            ) : allMedia.length === 4 ? (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                <div className="md:col-span-2 md:row-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
+                  <MediaItem media={allMedia[0]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
+                  <MediaItem media={allMedia[1]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}>
+                  <MediaItem media={allMedia[2]} title={tour.title} />
+                </div>
+                <div className="md:col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(3)}>
+                  <MediaItem media={allMedia[3]} title={tour.title} />
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                {/* Main large media - spanning 2x2 */}
+                <div 
+                  className="md:col-span-2 md:row-span-2 relative cursor-pointer overflow-hidden group/item h-full"
+                  onClick={() => openLightbox(0)}
+                >
+                  <MediaItem media={allMedia[0]} title={tour.title} priority />
+                </div>
+
+                {/* Small items placed specifically in the 4x2 grid */}
+                <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(1)}>
+                  <MediaItem media={allMedia[1]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer overflow-hidden group/item rounded-tr-[2rem] h-full" onClick={() => openLightbox(2)}>
+                  <MediaItem media={allMedia[2]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(3)}>
+                  <MediaItem media={allMedia[3]} title={tour.title} />
+                </div>
+                <div className="relative cursor-pointer overflow-hidden group/item rounded-br-[2rem] h-full" onClick={() => openLightbox(4)}>
+                  <MediaItem media={allMedia[4]} title={tour.title} />
+                  {allMedia.length > 5 && (
+                    <div 
+                      className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white backdrop-blur-[4px] group-hover/item:bg-black/70 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openLightbox(4);
+                      }}
+                    >
+                      <div className="text-3xl font-black mb-1">+{allMedia.length - 5}</div>
+                      <div className="text-[8px] font-black uppercase tracking-[0.3em]">Full Gallery</div>
                     </div>
                   )}
                 </div>
-              ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Journey Breakdown Badges - Moved to Top */}
+          {Array.isArray(days_breakdown) && days_breakdown.length > 0 && (
+            <div className="mt-6 flex flex-wrap items-center gap-4 bg-white p-3 rounded-full border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
+              <div className="bg-orange-600 text-white px-4 py-1.5 rounded-full font-black text-xs tracking-tight shadow-sm whitespace-nowrap">
+                {tour.duration_days}D/{tour.duration_nights}N
+              </div>
+              <div className="flex items-center gap-6 px-2">
+                {days_breakdown.map((item: any, idx: number) => (
+                  <div key={idx} className="flex items-center gap-2 whitespace-nowrap group">
+                    <div className="w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-sm group-hover:scale-110 transition-transform">
+                      {item.days}
+                    </div>
+                    <p className="text-xs font-bold text-slate-600">
+                      <span className="text-slate-400 font-medium">{item.days === 1 ? 'Day' : 'Days'} in</span> {item.city}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Sticky Pricing Bar for Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 p-4 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Starting from</p>
+          <p className="text-xl font-black text-slate-900">{tour.currency} {Number(displayPrice).toLocaleString("en-IN")}</p>
+        </div>
+        <button 
+          onClick={() => document.getElementById('booking-card')?.scrollIntoView({ behavior: 'smooth' })}
+          className="bg-orange-600 text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-orange-600/20 active:scale-95 transition-all"
+        >
+          Book Now
+        </button>
+      </div>
+
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Left Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Title and Location */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h1 className="text-3xl font-bold text-gray-900 mb-3">{tour.title}</h1>
-              <div className="flex items-center gap-4 text-gray-600 mb-4">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  <span>{tour.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{tour.duration_days} Days • {tour.duration_nights} Nights</span>
-                </div>
-              </div>
-              
-              {/* Cities breakdown - Thrillophilia style */}
-              {Array.isArray(days_breakdown) && days_breakdown.length > 0 && (
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-orange-600 text-white px-3 py-1 rounded-full font-bold text-sm">
-                    {tour.duration_days}D/{tour.duration_nights}N
-                  </div>
-                  {days_breakdown.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        {item.days}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-500">
-                          {item.days === 1 ? 'Day' : 'Days'} in
-                        </span>
-                        <br />
-                        <span className="font-semibold text-gray-900">{item.city}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Quick Features */}
-              {Array.isArray(inclusions) && inclusions.length > 0 && (
-                <div className="flex flex-wrap gap-4 text-sm mt-4">
-                  {inclusions.some((i: string) => i.toLowerCase().includes("transfer") || i.toLowerCase().includes("transport") || i.toLowerCase().includes("flight")) && (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <Car className="h-4 w-4" />
-                      <span>Transfer Included</span>
-                    </div>
-                  )}
-                  {inclusions.some((i: string) => i.toLowerCase().includes("meal") || i.toLowerCase().includes("breakfast") || i.toLowerCase().includes("dinner") || i.toLowerCase().includes("lunch")) && (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <Utensils className="h-4 w-4" />
-                      <span>Meals Included</span>
-                    </div>
-                  )}
-                  {inclusions.some((i: string) => i.toLowerCase().includes("sightseeing") || i.toLowerCase().includes("guide")) && (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <Camera className="h-4 w-4" />
-                      <span>Sightseeing Included</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
+          <div className="lg:col-span-2 space-y-12">
             {/* Overview */}
             {tour.description && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Overview</h2>
-                <p className="text-gray-700 leading-relaxed">{tour.description}</p>
-              </div>
+              <section className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-1.5 bg-orange-600 rounded-full" />
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">The Experience</h2>
+                </div>
+                <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+                   <p className="text-slate-600 leading-relaxed text-base relative z-10">{tour.description}</p>
+                </div>
+              </section>
             )}
 
-            {/* Highlights */}
+            {/* Trip Highlights - Moved here */}
             {Array.isArray(highlights) && highlights.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Highlights</h2>
-                <div className="grid gap-3">
-                  {highlights.map((highlight: string, index: number) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                      <p className="text-gray-700">{highlight}</p>
+              <section className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-1.5 bg-slate-900 rounded-full" />
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Trip Highlights</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {highlights.map((h: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-50 shadow-sm group hover:border-orange-100 hover:bg-orange-50/30 transition-all">
+                      <div className="w-10 h-10 bg-slate-50 rounded-xl shadow-sm flex items-center justify-center text-orange-600 font-black text-sm group-hover:bg-white">{idx + 1}</div>
+                      <p className="text-slate-700 font-bold text-sm leading-tight">{h}</p>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* Itinerary */}
+            {/* Itinerary Timeline */}
             {Array.isArray(itinerary) && itinerary.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-6 text-gray-900">Detailed Itinerary</h2>
-                <div className="space-y-4">
+              <section className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-6 w-1 bg-slate-900 rounded-full" />
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">Detailed Itinerary</h2>
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    {itinerary.length} Days
+                  </div>
+                </div>
+
+                <div className="space-y-0 relative before:absolute before:left-8 before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-100">
                   {itinerary.map((day: any, index: number) => {
-                    const open = openDays.includes(index);
+                    const isOpen = openDays.includes(index);
                     return (
-                      <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden">
-                        <button
-                          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none"
-                          onClick={() => toggleDay(index)}
-                          aria-expanded={open}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white font-bold">
-                              {index + 1}
-                            </div>
-                            <div className="text-left">
-                              <h3 className="font-semibold text-gray-900">Day {index + 1}</h3>
-                              <p className="text-gray-600 text-sm">{day.title}</p>
-                            </div>
-                          </div>
-                          {open ? (
-                            <ChevronUp className="w-5 h-5 text-orange-500" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-orange-500" />
-                          )}
-                        </button>
-                        {open && (
-                          <div className="p-4 bg-white border-t border-gray-200">
-                            {day.date && (
-                              <div className="text-sm text-orange-600 font-medium mb-2">{day.date}</div>
-                            )}
-                            <p className="text-gray-700 mb-3">{day.description}</p>
-                            {day.hotel && (
-                              <div className="bg-blue-50 p-3 rounded-2xl">
-                                <div className="text-sm text-blue-600 font-medium">Accommodation</div>
-                                <div className="text-blue-800">{day.hotel}</div>
+                      <div key={index} className={`relative pl-16 pb-6 transition-all ${isOpen ? 'opacity-100' : 'opacity-80'}`}>
+                        {/* Timeline Marker */}
+                        <div className={`absolute left-[29px] top-4 w-[8px] h-[8px] rounded-full border-2 border-white shadow-sm z-10 transition-all ${isOpen ? 'bg-orange-600 scale-125' : 'bg-slate-300'}`} />
+                        
+                        <div className={`bg-white rounded-3xl border transition-all duration-300 overflow-hidden ${isOpen ? 'border-orange-100 shadow-md shadow-orange-600/5' : 'border-slate-100 shadow-sm'}`}>
+                          <button
+                            className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                            onClick={() => toggleDay(index)}
+                          >
+                            <div className="flex items-center gap-5">
+                              <span className="text-3xl font-black text-orange-600/30 tracking-tighter w-12 text-center transition-colors group-hover:text-orange-600/50">0{index + 1}</span>
+                              <div>
+                                <h3 className="font-black text-slate-900 text-base leading-tight mb-0.5">{day.title}</h3>
+                                {day.hotel && (
+                                  <div className="flex items-center gap-1.5 text-slate-400 text-[9px] font-bold uppercase tracking-widest">
+                                    <MapPin size={8} /> {day.hotel}
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        )}
+                            </div>
+                            <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${isOpen ? 'bg-orange-600 text-white rotate-180' : 'bg-slate-50 text-slate-400'}`}>
+                              <ChevronDown size={14} />
+                            </div>
+                          </button>
+                          
+                          {isOpen && (
+                            <div className="px-5 pb-5 animate-in fade-in slide-in-from-top-1 duration-300">
+                              <div className="h-px bg-slate-50 w-full mb-3" />
+                              <p className="text-slate-600 leading-relaxed text-sm">{day.description}</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* Inclusions/Exclusions */}
-            {(Array.isArray(inclusions) && inclusions.length > 0 || Array.isArray(exclusions) && exclusions.length > 0) && (
-              <div className="grid md:grid-cols-2 gap-6">
-                {Array.isArray(inclusions) && inclusions.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-sm">
-                    <h2 className="text-xl font-bold mb-4 text-gray-900">Inclusions</h2>
-                    <ul className="space-y-3">
-                      {inclusions.map((inclusion: string, index: number) => (
-                        <li key={index} className="flex items-start gap-3 text-gray-700">
-                          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{inclusion}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {Array.isArray(exclusions) && exclusions.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-sm">
-                    <h2 className="text-xl font-bold mb-4 text-gray-900">Exclusions</h2>
-                    <ul className="space-y-3">
-                      {exclusions.map((exclusion: string, index: number) => (
-                        <li key={index} className="flex items-start gap-3 text-gray-700">
-                          <X className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{exclusion}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Particulars Grid */}
+            <section className="grid md:grid-cols-2 gap-6">
+               {/* Inclusions */}
+               {Array.isArray(inclusions) && inclusions.length > 0 && (
+                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden group">
+                   <h2 className="text-xl font-black mb-6 flex items-center gap-2 text-slate-900">
+                     <CheckCircle className="text-emerald-500" size={24} /> Inclusions
+                   </h2>
+                   <ul className="space-y-3">
+                     {inclusions.map((item: string, idx: number) => (
+                       <li key={idx} className="flex items-start gap-3 text-slate-600 leading-snug">
+                         <div className="mt-1.5 w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
+                         <span className="text-xs font-medium">{item}</span>
+                       </li>
+                     ))}
+                   </ul>
+                 </div>
+               )}
 
-            {/* Know Before You Go */}
+               {/* Exclusions */}
+               {Array.isArray(exclusions) && exclusions.length > 0 && (
+                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden group">
+                   <h2 className="text-xl font-black mb-6 flex items-center gap-2 text-slate-900">
+                     <X className="text-red-400" size={24} /> Exclusions
+                   </h2>
+                   <ul className="space-y-3">
+                     {exclusions.map((item: string, idx: number) => (
+                       <li key={idx} className="flex items-start gap-3 text-slate-600 leading-snug">
+                         <div className="mt-1.5 w-1 h-1 rounded-full bg-slate-200 shrink-0" />
+                         <span className="text-xs font-medium">{item}</span>
+                       </li>
+                     ))}
+                   </ul>
+                 </div>
+               )}
+            </section>
+
+            {/* Know Before You Go - Added here */}
             {Array.isArray(know_before_you_go) && know_before_you_go.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-900">Know Before You Go</h2>
-                <ul className="space-y-3">
-                  {know_before_you_go.map((item: string, index: number) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                      <p className="text-gray-700 text-sm">{item}</p>
-                    </li>
+              <section className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-bl-full -z-0" />
+                <h2 className="text-2xl font-black mb-8 flex items-center gap-3 relative z-10">
+                  <Camera className="text-orange-400" size={32} /> Know Before You Go
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 relative z-10">
+                  {know_before_you_go.map((item: string, idx: number) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
+                      <p className="text-sm font-medium text-slate-300 leading-relaxed">{item}</p>
+                    </div>
                   ))}
-                </ul>
-              </div>
+                </div>
+              </section>
             )}
           </div>
 
-          {/* Right Sidebar - Booking Form */}
+          {/* Right Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-8">
-              {/* Pricing */}
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Price</h3>
-                {displayPrice && Number(displayPrice) > 0 ? (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Starting from</span>
-                      <span className="text-xl font-bold text-orange-600">
-                        {tour.currency} {Number(displayPrice).toLocaleString("en-IN")}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">*Per person on twin sharing basis</p>
-                  </>
-                ) : (
-                  <div className="flex items-center justify-between bg-orange-50 p-4 rounded-xl border border-orange-100">
-                    <span className="text-orange-800 font-bold tracking-wide">Price on Request</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Download Brochure with Preview */}
+            <div id="booking-card" className="sticky top-28 space-y-6">
+              {/* Brochure Card */}
               {tour.brochure_url && (
-                <div className="flex items-center gap-2 mb-4">
-                  <a
-                    href={tour.brochure_url}
-                    download
-                    className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-full px-4 py-3 transition-colors"
-                  >
-                    Download Brochure
-                  </a>
-                  <button
-                    type="button"
-                    className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition-colors"
-                    title="Preview Brochure"
-                    onClick={() => setBrochureOpen(true)}
-                  >
-                    <Eye className="h-5 w-5" />
-                  </button>
-                  <Dialog open={brochureOpen} onOpenChange={setBrochureOpen}>
-                    <DialogContent className="max-w-[90vw] w-[90vw] p-0 rounded-3xl overflow-hidden">
-                      <DialogHeader className="px-6 pt-6">
-                        <DialogTitle>Brochure Preview</DialogTitle>
-                      </DialogHeader>
-                      <div className="w-full h-[80vh]">
-                        <iframe
-                          src={tour.brochure_url}
-                          title="Brochure Preview"
-                          className="w-full h-full rounded-b-3xl border-0"
-                          frameBorder="0"
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                <div className="bg-slate-900 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full pointer-events-none" />
+                  <div className="relative z-10 flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-black mb-0.5 leading-tight uppercase tracking-tight text-orange-400">Digital Brochure</h4>
+                      <p className="text-white text-[10px] font-bold opacity-70">Get the full itinerary PDF</p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <a
+                        href={tour.brochure_url}
+                        download
+                        className="w-10 h-10 bg-white text-slate-900 rounded-xl flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all shadow-lg active:scale-95"
+                        title="Download PDF"
+                      >
+                        <Download size={18} />
+                      </a>
+                      <button
+                        onClick={() => setBrochureOpen(true)}
+                        className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-colors border border-white/10"
+                        title="Preview Online"
+                      >
+                        <Eye size={16} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Booking Form */}
-              <form onSubmit={handleEnquiry} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Enter email address"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="w-full rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
-                  required
-                />
-                <div className="flex gap-2">
-                  <select className="rounded-full border border-gray-300 px-3 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black" defaultValue="+91" disabled>
-                    <option value="+91">+91</option>
-                  </select>
-                  <input
-                    type="tel"
-                    placeholder="Enter phone number"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    className="flex-1 rounded-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
-                    required
-                  />
+              {/* Booking Card */}
+              <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 relative overflow-hidden">
+                <div className="relative z-10 space-y-6">
+                  <div>
+                    <h3 className="text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] mb-2">Reserve Your Spot</h3>
+                    <div className="flex items-end gap-1">
+                      <span className="text-3xl font-black text-slate-900">{tour.currency} {Number(displayPrice).toLocaleString("en-IN")}</span>
+                      <span className="text-slate-400 text-xs font-bold mb-1">/ person</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleEnquiry} className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Your Name</label>
+                      <input
+                        type="text"
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        className="w-full rounded-xl bg-slate-50 border-none px-5 py-3 focus:ring-1 focus:ring-orange-500 text-slate-900 font-bold placeholder:text-slate-300 text-sm transition-all"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Email Address</label>
+                      <input
+                        type="email"
+                        placeholder="john@example.com"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        className="w-full rounded-xl bg-slate-50 border-none px-5 py-3 focus:ring-1 focus:ring-orange-500 text-slate-900 font-bold placeholder:text-slate-300 text-sm transition-all"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Phone Number</label>
+                      <div className="flex gap-2">
+                        <select className="rounded-xl bg-slate-50 border-none px-3 py-3 text-sm text-slate-900 font-bold" defaultValue="+91" disabled>
+                          <option value="+91">+91</option>
+                        </select>
+                        <input
+                          type="tel"
+                          placeholder="98765 43210"
+                          value={phone}
+                          onChange={e => setPhone(e.target.value)}
+                          className="flex-1 rounded-xl bg-slate-50 border-none px-5 py-3 focus:ring-1 focus:ring-orange-500 text-slate-900 font-bold placeholder:text-slate-300 text-sm transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full h-14 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-base shadow-lg mt-2 transition-all"
+                    >
+                      {loading ? 'Processing...' : 'Request Booking'}
+                    </Button>
+                  </form>
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-3 shadow-lg transition-all"
-                  disabled={loading}
-                >
-                  {loading ? 'Sending...' : 'Send Enquiry'}
-                </Button>
-                {/* Success Dialog Popup */}
-                <Dialog open={success} onOpenChange={setSuccess}>
-                  <DialogContent className="rounded-3xl border border-gray-200 p-6">
-                    <DialogHeader>
-                      <DialogTitle>Enquiry Sent!</DialogTitle>
-                    </DialogHeader>
-                    <div className="py-2 text-center text-gray-700">Thank you for your enquiry. We will contact you soon.</div>
-                    <DialogFooter>
-                      <button
-                        type="button"
-                        className="w-full rounded-full bg-black hover:bg-black/90 text-white font-semibold py-2 mt-2"
-                        onClick={() => setSuccess(false)}
-                      >
-                        OK
-                      </button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </form>
-              
-              <div className="mt-4 text-center">
-                <p className="text-xs text-gray-500">
-                  By clicking send enquiry, you agree to our terms & conditions
-                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    {/* Stats Section Before Footer
-    <div className="w-full mt-16">
-      <div className="px-2">
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mb-12" />
-      </div>
-  <section className="w-full bg-gray-50 py-20">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 text-center">
-          <div>
-            <img src="/images/stats-customers.svg" alt="Happy Customers" className="mx-auto mb-4 h-20 w-20" />
-            <div className="text-xl font-bold mb-1">10 Million+</div>
-            <div className="text-gray-600 text-sm">Happy customers from 65+ countries all around.</div>
+
+      {/* Brochure Dialog */}
+      <Dialog open={brochureOpen} onOpenChange={setBrochureOpen}>
+        <DialogContent className="max-w-[95vw] w-[1200px] p-0 rounded-[2.5rem] overflow-hidden border-none bg-slate-900 shadow-3xl">
+          <DialogHeader className="p-8 pb-4">
+            <DialogTitle className="text-white text-2xl font-black">Expedition Brochure</DialogTitle>
+          </DialogHeader>
+          <div className="w-full h-[80vh] px-4 pb-4">
+            <iframe
+              src={tour.brochure_url}
+              title="Brochure Preview"
+              className="w-full h-full rounded-[2rem] border-0"
+              frameBorder="0"
+            />
           </div>
-          <div>
-            <img src="/images/stats-rating.svg" alt="Ratings" className="mx-auto mb-4 h-20 w-20" />
-            <div className="text-xl font-bold mb-1">4.6 / 5.0</div>
-            <div className="text-gray-600 text-sm">Cumulative ratings of our trips across platforms.</div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Lightbox / Full Gallery */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-[100vw] w-screen h-screen p-0 m-0 border-none bg-black/95 backdrop-blur-2xl transition-all duration-500 overflow-hidden">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Photo Gallery</DialogTitle>
+          </DialogHeader>
+          <div className="relative w-full h-full flex flex-col">
+            {/* Header / Back Button */}
+            <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-50 bg-gradient-to-b from-black/60 to-transparent">
+              <button 
+                onClick={() => setLightboxOpen(false)}
+                className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group"
+              >
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-all">
+                  <ChevronLeft size={24} />
+                </div>
+                <span className="font-bold text-sm tracking-widest uppercase">Back to Tour</span>
+              </button>
+              <div className="text-white/40 font-black text-xs tracking-widest uppercase">
+                {activeMediaIndex + 1} / {allMedia.length}
+              </div>
+            </div>
+
+            {/* Main Media Display */}
+            <div className="flex-1 flex items-center justify-center relative px-4 md:px-20">
+              <button 
+                onClick={() => setActiveMediaIndex((prev) => (prev > 0 ? prev - 1 : allMedia.length - 1))}
+                className="absolute left-6 md:left-10 z-50 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
+              >
+                <ChevronLeft size={32} />
+              </button>
+              
+              <div className="relative w-full h-[70vh] md:h-[80vh] max-w-7xl overflow-hidden animate-in zoom-in-95 duration-500">
+                {allMedia[activeMediaIndex]?.type === 'image' ? (
+                  <Image
+                    src={allMedia[activeMediaIndex].url}
+                    alt="Gallery"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                ) : (
+                  <video 
+                    src={allMedia[activeMediaIndex]?.url} 
+                    controls 
+                    autoPlay 
+                    className="w-full h-full object-contain"
+                  />
+                )}
+              </div>
+
+              <button 
+                onClick={() => setActiveMediaIndex((prev) => (prev < allMedia.length - 1 ? prev + 1 : 0))}
+                className="absolute right-6 md:right-10 z-50 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
+              >
+                <ChevronRight size={32} />
+              </button>
+            </div>
+
+            {/* Thumbnail Strip */}
+            <div className="h-24 p-4 bg-black/40 backdrop-blur-xl border-t border-white/5 flex items-center justify-center gap-3 overflow-x-auto no-scrollbar">
+              {allMedia.map((media, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveMediaIndex(idx)}
+                  className={`relative flex-shrink-0 w-20 h-14 rounded-xl overflow-hidden transition-all duration-300 ${activeMediaIndex === idx ? 'ring-2 ring-orange-500 scale-110 z-10' : 'opacity-40 hover:opacity-100'}`}
+                >
+                  <MediaItem media={media} title="Thumb" />
+                </button>
+              ))}
+            </div>
           </div>
-          <div>
-            <img src="/images/stats-curated.svg" alt="Curated with love" className="mx-auto mb-4 h-20 w-20" />
-            <div className="text-xl font-bold mb-1">Curated with love</div>
-            <div className="text-gray-600 text-sm">Expert-guided trips with meticulous planning.</div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={success} onOpenChange={setSuccess}>
+        <DialogContent className="rounded-[2.5rem] border-none p-10 text-center max-w-sm">
+          <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+             <CheckCircle size={40} />
           </div>
-          <div>
-            <img src="/images/stats-support.svg" alt="24*7 Support" className="mx-auto mb-4 h-20 w-20" />
-            <div className="text-xl font-bold mb-1">24*7 Support</div>
-            <div className="text-gray-600 text-sm">We are always there to help you pre, post and on the trip.</div>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black text-slate-900 text-center">Inquiry Received!</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-slate-500 font-medium leading-relaxed">
+            Your expedition request has been sent to our travel experts. Expect a call within 24 hours.
           </div>
-        </div>
-      </section>
-    </div> */}
+          <DialogFooter>
+            <button
+              type="button"
+              className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-black text-lg transition-all"
+              onClick={() => setSuccess(false)}
+            >
+              Great, thanks!
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

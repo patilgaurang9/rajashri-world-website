@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Loader2, Save, Phone, Mail, MapPin, Facebook, Instagram, Youtube, CheckCircle2 } from "lucide-react"
+import { Loader2, Save, Phone, Mail, MapPin, Facebook, Instagram, Youtube, CheckCircle2, Upload, Trash2, Play, ExternalLink } from "lucide-react"
+import { compressImage } from "@/lib/image-utils"
 
 interface Settings {
   phone1: string
@@ -12,11 +13,12 @@ interface Settings {
   facebook_url: string
   instagram_url: string
   youtube_url: string
+  welcome_reel_url?: string
 }
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Settings>({
-    phone1: "", phone2: "", email: "", address: "", maps_link: "", facebook_url: "", instagram_url: "", youtube_url: ""
+    phone1: "", phone2: "", email: "", address: "", maps_link: "", facebook_url: "", instagram_url: "", youtube_url: "", welcome_reel_url: ""
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -115,23 +117,76 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
+      </div>
+
       <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-8">
         <h2 className="text-xl font-bold flex items-center gap-2 border-b border-gray-100 pb-4">
-          <Facebook className="text-gray-400" size={20} /> Social Media Links
+          <Play className="text-gray-400" size={20} /> Welcome Reel (Popup)
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="admin-form-group">
-            <label className="admin-label">Facebook URL</label>
-            <input className="admin-input" value={settings.facebook_url || ""} onChange={e => setSettings({...settings, facebook_url: e.target.value})} placeholder="https://facebook.com/..." />
-          </div>
-          <div className="admin-form-group">
-            <label className="admin-label">Instagram URL</label>
-            <input className="admin-input" value={settings.instagram_url || ""} onChange={e => setSettings({...settings, instagram_url: e.target.value})} placeholder="https://instagram.com/..." />
-          </div>
-          <div className="admin-form-group">
-            <label className="admin-label">YouTube URL</label>
-            <input className="admin-input" value={settings.youtube_url || ""} onChange={e => setSettings({...settings, youtube_url: e.target.value})} placeholder="https://youtube.com/..." />
+        <div className="space-y-4">
+          <p className="text-sm text-gray-500">This video will appear as a popup when users first visit your website. Best for short Reels or announcements.</p>
+          
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-gray-400 border border-gray-100 shadow-sm">
+                  <Play size={20} />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-gray-900 truncate max-w-[200px]">
+                    {settings.welcome_reel_url ? "Welcome_Reel.mp4" : "No video uploaded"}
+                  </div>
+                  {settings.welcome_reel_url && <div className="text-[10px] text-green-600 font-bold uppercase tracking-wider">Active</div>}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {settings.welcome_reel_url && (
+                  <>
+                    <a href={settings.welcome_reel_url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-200 rounded-lg text-gray-400 transition-colors">
+                      <ExternalLink size={18} />
+                    </a>
+                    <button onClick={() => setSettings({...settings, welcome_reel_url: ""})} className="p-2 hover:bg-red-50 rounded-lg text-red-400 transition-colors">
+                      <Trash2 size={18} />
+                    </button>
+                  </>
+                )}
+                <input 
+                  type="file" 
+                  id="reel-upload" 
+                  className="hidden" 
+                  accept="video/*" 
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setSaving(true);
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("bucket", "brochures");
+                    try {
+                      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+                      const data = await res.json();
+                      if (data.url) setSettings({...settings, welcome_reel_url: data.url});
+                    } catch (err) { alert("Upload error"); }
+                    finally { setSaving(false); }
+                  }} 
+                />
+                <button
+                  className="btn-admin btn-admin-primary !py-2 !px-4 !rounded-xl !text-xs"
+                  onClick={() => document.getElementById('reel-upload')?.click()}
+                  disabled={saving}
+                >
+                  <Upload size={14} className="mr-2" />
+                  <span>{settings.welcome_reel_url ? "Replace Video" : "Upload Video"}</span>
+                </button>
+              </div>
+            </div>
+            
+            {settings.welcome_reel_url && (
+              <div className="mt-4 aspect-[9/16] max-w-[200px] mx-auto rounded-2xl overflow-hidden border border-gray-200 shadow-lg bg-black">
+                <video src={settings.welcome_reel_url} controls className="w-full h-full object-cover" />
+              </div>
+            )}
           </div>
         </div>
       </div>
