@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { Textarea } from "@/components/ui/textarea"
 import { Slider } from "@/components/ui/slider"
 import { CheckCircle } from "lucide-react"
@@ -123,17 +123,19 @@ export function CustomBookingForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration" className="text-gray-700">Duration</Label>
-              <Select value={duration} onValueChange={setDuration}>
-                <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
-                  <SelectValue placeholder="Select duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3-5">3-5 days</SelectItem>
-                  <SelectItem value="6-10">6-10 days</SelectItem>
-                  <SelectItem value="11-15">11-15 days</SelectItem>
-                  <SelectItem value="16+">16+ days</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                id="duration"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="w-full h-12 px-4 bg-white border border-gray-300 rounded-full text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+              >
+                <option value="">Select duration</option>
+                <option value="3-5">3–5 days</option>
+                <option value="6-10">6–10 days</option>
+                <option value="11-15">11–15 days</option>
+                <option value="16+">16+ days</option>
+              </select>
             </div>
           </div>
 
@@ -160,33 +162,34 @@ export function CustomBookingForm() {
 
           <div className="space-y-2">
             <Label className="text-gray-700">Accommodation Type</Label>
-            <Select value={accommodation} onValueChange={setAccommodation}>
-              <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
-                <SelectValue placeholder="Select accommodation" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="budget">Budget (Hostels, Budget Hotels)</SelectItem>
-                <SelectItem value="standard">Standard (3-star Hotels)</SelectItem>
-                <SelectItem value="luxury">Luxury (4-5 star Hotels)</SelectItem>
-                <SelectItem value="premium">Premium (Resorts, Villas)</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              value={accommodation}
+              onChange={(e) => setAccommodation(e.target.value)}
+              className="w-full h-12 px-4 bg-white border border-gray-300 rounded-full text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+            >
+              <option value="">Select accommodation</option>
+              <option value="budget">Budget (Hostels, Budget Hotels)</option>
+              <option value="standard">Standard (3-star Hotels)</option>
+              <option value="luxury">Luxury (4–5 star Hotels)</option>
+              <option value="premium">Premium (Resorts, Villas)</option>
+            </select>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="travelers" className="text-gray-700">Number of Travelers</Label>
-            <Select value={travelers} onValueChange={setTravelers}>
-              <SelectTrigger className="bg-white border-gray-300 rounded-full h-12">
-                <SelectValue placeholder="Select number of travelers" />
-              </SelectTrigger>
-              <SelectContent>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                  <SelectItem key={num} value={num.toString()}>
-                    {num} {num === 1 ? "Traveler" : "Travelers"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              id="travelers"
+              value={travelers}
+              onChange={(e) => setTravelers(e.target.value)}
+              className="w-full h-12 px-4 bg-white border border-gray-300 rounded-full text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+            >
+              <option value="">Select number of travelers</option>
+              {[1,2,3,4,5,6,7,8].map((num) => (
+                <option key={num} value={num.toString()}>{num} {num === 1 ? 'Traveler' : 'Travelers'}</option>
+              ))}
+            </select>
           </div>
 
           <div className="space-y-2">

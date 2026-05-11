@@ -3,7 +3,6 @@ import { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 
 
@@ -85,17 +84,18 @@ export function ToursFilters({ onApply }: { onApply?: (filters: { minPrice: numb
           {/* Duration */}
           <div className="w-full">
             <Label className="text-sm font-medium text-gray-700 mb-3 block">Duration</Label>
-            <Select value={duration} onValueChange={setDuration}>
-              <SelectTrigger className="bg-white border-gray-300 rounded-full h-11 text-sm w-full">
-                <SelectValue placeholder="Any duration" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1-3">1-3 days</SelectItem>
-                <SelectItem value="4-7">4-7 days</SelectItem>
-                <SelectItem value="8-14">8-14 days</SelectItem>
-                <SelectItem value="15+">15+ days</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              className="w-full h-11 px-4 bg-white border border-gray-300 rounded-full text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent appearance-none cursor-pointer"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+            >
+              <option value="">Any duration</option>
+              <option value="1-3">1–3 days</option>
+              <option value="4-7">4–7 days</option>
+              <option value="8-14">8–14 days</option>
+              <option value="15+">15+ days</option>
+            </select>
           </div>
 
           {/* Apply Button */}

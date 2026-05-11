@@ -34,12 +34,15 @@ function FeaturedToursContent() {
   return (
     <section className="py-16 sm:py-20 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-            Featured{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Tours</span>
+        <div className="mb-10 sm:mb-14">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+            <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">Handpicked</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            Featured <span className="text-orange-600">Tours</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-500 mt-2 max-w-xl">
             Discover our most popular destinations and experiences
           </p>
         </div>

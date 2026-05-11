@@ -153,13 +153,6 @@ export function Navbar() {
                             <DropdownMenuSeparator className="bg-slate-50" />
                           </>
                         )}
-                        <DropdownMenuItem className="rounded-xl p-3 font-bold text-slate-700 focus:bg-slate-50 cursor-pointer" onClick={() => router.push("/profile")}>
-                          Profile Settings
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="rounded-xl p-3 font-bold text-slate-700 focus:bg-slate-50 cursor-pointer" onClick={() => router.push("/my-bookings")}>
-                          My Bookings
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem 
                           className="rounded-xl p-3 font-bold text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer"
                           onClick={handleLogout}
@@ -188,38 +181,90 @@ export function Navbar() {
             </div>
           </div>
 
-        {/* Mobile Navigation */}
+        </div>
+      </nav>
+      {/* Mobile Navigation Overlay */}
         {isOpen && (
-          <div className="md:hidden fixed inset-0 z-[60] bg-white animate-in slide-in-from-right duration-300">
-            <div className="p-4 border-b flex justify-between items-center h-16">
+          <div
+            className="md:hidden fixed top-0 left-0 right-0 bottom-0 flex flex-col"
+            style={{ zIndex: 9999, backgroundColor: '#ffffff' }}
+          >
+            {/* Mobile Nav Header */}
+            <div className="flex justify-between items-center px-5 py-4 border-b border-gray-100" style={{ backgroundColor: '#ffffff', minHeight: 64 }}>
               <span className="font-black text-xl tracking-tighter">RAJASHRI<span className="text-orange-600">WORLD</span></span>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                <X className="h-8 w-8" />
-              </Button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
+              >
+                <X className="h-6 w-6 text-gray-800" />
+              </button>
             </div>
-            <div className="p-8 space-y-6">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block text-2xl font-black uppercase tracking-widest text-slate-900 hover:text-orange-600 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <div className="pt-8">
-                {mounted && !isAuthenticated && (
-                  <Button className="w-full h-16 rounded-2xl bg-slate-900 text-white font-black text-xl" onClick={() => { setAuthOpen(true); setIsOpen(false); }}>
+
+            {/* Mobile Nav Links */}
+            <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#ffffff' }}>
+              <div className="px-5 py-6">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`block py-4 text-lg font-bold tracking-tight border-b border-gray-50 transition-colors ${
+                      pathname === item.href
+                        ? "text-orange-600"
+                        : "text-gray-900 hover:text-orange-600"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Auth Section */}
+              <div className="px-5 pb-8">
+                {!mounted ? (
+                  <div className="h-14 w-full bg-gray-100 animate-pulse rounded-xl" />
+                ) : !isAuthenticated ? (
+                  <Button
+                    className="w-full h-14 rounded-xl bg-black text-white font-bold text-base"
+                    onClick={() => { setAuthOpen(true); setIsOpen(false); }}
+                  >
                     Sign In
                   </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-xl border border-orange-100">
+                      <div className="w-10 h-10 rounded-lg bg-orange-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
+                        {userInitial}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-orange-600 uppercase tracking-wider">Signed in</p>
+                        <p className="text-sm text-gray-900 font-bold truncate">Authorized User</p>
+                      </div>
+                    </div>
+
+                    {role === 'admin' && (
+                      <Button
+                        variant="outline"
+                        className="w-full h-12 rounded-xl border-gray-200 text-gray-900 font-semibold"
+                        onClick={() => { router.push("/admin"); setIsOpen(false); }}
+                      >
+                        Admin Dashboard
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="ghost"
+                      className="w-full h-12 rounded-xl text-red-600 font-semibold hover:bg-red-50"
+                      onClick={() => { handleLogout(); setIsOpen(false); }}
+                    >
+                      Sign Out
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         )}
-        </div>
-      </nav>
       {/* Auth Modal */}
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>

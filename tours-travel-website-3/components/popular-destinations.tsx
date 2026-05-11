@@ -8,14 +8,14 @@ const highlightDestinations = [
     title: "Dubai Tourism",
     subtitle: "Dubai, UAE",
     image: "/images/dubai.jpg",
-    slug: "dubai-adventure-2025",
+    slug: "adventure-of-dubai",
     wide: true,
   },
   {
     title: "Bali Tourism",
     subtitle: "Denpasar, Bali",
     image: "/images/bali-image.jpg",
-    slug: "bali-trip-2025",
+    slug: "bali-trip",
     wide: false,
   },
   {
@@ -29,7 +29,7 @@ const highlightDestinations = [
     title: "Goa Tourism",
     subtitle: "Goa, India",
     image: "/images/goa.jpg",
-    slug: "goa-family-tour-nov-2025",
+    slug: "goa-family-tour",
     wide: true,
   },
 ]
@@ -55,30 +55,60 @@ const howItWorksSteps = [
 
 export function PopularDestinations() {
   return (
-    <section className="bg-white">
+    <section className="bg-[#FFF8F1]">
       {/* Orange Background Block - Bottom Part of the shared block */}
-      <div className="bg-[#FFF8F1] rounded-b-[5rem] relative overflow-hidden pt-12 pb-32">
+      <div className="bg-[#FFF8F1] rounded-b-[5rem] relative overflow-hidden pt-12 pb-16">
         {/* Decorative Elements */}
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100/20 rounded-full blur-3xl -z-10 -mr-48 -mb-48" />
 
         <div className="container mx-auto px-4 md:px-12">
-          <div className="mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div className="max-w-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-0.5 bg-orange-600 rounded-full" />
-                <span className="text-orange-600 font-black text-xs uppercase tracking-[0.3em]">Top Picks</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+                <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">Top Picks</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                Popular <br />
-                <span className="text-orange-600">Destinations</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                Popular <span className="text-orange-600">Destinations</span>
               </h2>
             </div>
-            <p className="text-slate-500 font-medium max-w-md leading-relaxed">
+            <p className="text-slate-500 font-medium max-w-md leading-relaxed text-sm sm:text-base">
               Extraordinary natural beauty, enjoy the rich culture, and experience the friendliness of the local people.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Mobile: horizontal scroll */}
+          <div className="md:hidden -mx-4 px-4">
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {highlightDestinations.map((destination) => (
+                <Link
+                  key={destination.title}
+                  href={`/tours/${destination.slug}`}
+                  className="flex-none w-[78vw] snap-start relative rounded-[2rem] overflow-hidden min-h-[240px] group shadow-xl"
+                >
+                  <Image
+                    src={destination.image}
+                    alt={destination.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="78vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute left-6 bottom-6 text-white">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-orange-400 mb-1">{destination.subtitle}</p>
+                    <h3 className="text-2xl font-black tracking-tight">{destination.title}</h3>
+                  </div>
+                </Link>
+              ))}
+              <div className="flex-none w-2 shrink-0" />
+            </div>
+          </div>
+
+          {/* Desktop: asymmetric grid */}
+          <div className="hidden md:grid md:grid-cols-12 gap-6">
             {highlightDestinations.map((destination) => (
               <Link
                 key={destination.title}
@@ -122,52 +152,56 @@ export function PopularDestinations() {
       </div>
 
       {/* How it Works Section - Moved OUTSIDE the orange block */}
-      <div className="py-32 bg-white">
+      <div className="py-24 md:py-32 bg-white">
         <div className="container mx-auto px-4 md:px-12">
-          <div className="mb-12">
-            <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight">How to Book Your Tour</h3>
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+              <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">Process</span>
+            </div>
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight">How to Book <span className="text-orange-600">Your Tour</span></h3>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 items-start">
-            <div className="relative">
-              <div className="relative w-full rounded-[3rem] overflow-hidden min-h-[450px] shadow-2xl group">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="relative group">
+              <div className="relative w-full rounded-[2.5rem] overflow-hidden min-h-[400px] md:min-h-[500px] shadow-2xl">
                 <Image
                   src="/images/simon-english-48nerZQCHgo-unsplash.jpg"
                   alt="Adventure traveler"
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-8 left-8 right-8">
-                  <p className="text-base text-white font-medium leading-relaxed max-w-sm">
-                    Discover beautiful places and start your journey with an easy booking process made for you.
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                <div className="absolute bottom-10 left-10 right-10">
+                  <p className="text-lg text-white/90 font-medium leading-relaxed max-w-sm italic">
+                    "Discover beautiful places and start your journey with an easy booking process made for you."
                   </p>
                 </div>
               </div>
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-orange-600 rounded-full flex items-center justify-center text-white text-center p-4 shadow-xl rotate-12 group-hover:rotate-0 transition-transform">
-                <p className="text-xs font-black uppercase leading-tight">100% Verified Trips</p>
+              <div className="absolute -top-6 -right-6 w-32 h-32 bg-orange-600 rounded-full flex flex-col items-center justify-center text-white text-center p-4 shadow-2xl rotate-12 group-hover:rotate-0 transition-all duration-500 border-4 border-white z-10">
+                <p className="text-[10px] font-black uppercase leading-tight tracking-widest">100% Verified Trips</p>
               </div>
             </div>
 
-            <div className="space-y-8">
-              <h4 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Simple 4 Step Process</h4>
+            <div className="space-y-10">
+              <div>
+                <p className="text-orange-600 font-black text-[10px] uppercase tracking-[0.3em] mb-4">The Rajashri Method</p>
+                <h4 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-none">Simple 4 Step Process</h4>
+              </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {howItWorksSteps.map((step, index) => (
                   <div
                     key={step.title}
-                    className={`flex gap-6 rounded-[2rem] p-6 transition-all border ${index === 0
-                        ? "bg-gray-50 border-slate-100 shadow-xl shadow-slate-900/5"
-                        : "bg-white border-transparent hover:bg-slate-50 hover:border-slate-100 hover:shadow-lg"
-                      }`}
+                    className="flex gap-6 rounded-[2rem] p-6 transition-all border border-slate-50 bg-white hover:bg-slate-50/50 hover:border-orange-100 hover:shadow-xl hover:shadow-orange-600/5 group/step"
                   >
-                    <div className="h-10 w-10 bg-slate-900 text-white rounded-2xl flex items-center justify-center shrink-0 font-black text-base shadow-lg">
+                    <div className="h-12 w-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center shrink-0 font-black text-lg shadow-lg group-hover/step:bg-orange-600 transition-colors duration-300">
                       {index + 1}
                     </div>
                     <div>
-                      <h5 className="text-base md:text-lg font-black text-slate-900 tracking-tight">{step.title}</h5>
-                      <p className="text-sm text-slate-500 mt-1 font-medium leading-relaxed">{step.desc}</p>
+                      <h5 className="text-lg md:text-xl font-black text-slate-900 tracking-tight mb-1">{step.title}</h5>
+                      <p className="text-sm text-slate-500 font-medium leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 ))}

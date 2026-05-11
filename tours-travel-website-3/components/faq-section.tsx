@@ -15,11 +15,15 @@ export function FAQSection() {
   return (
     <section className="max-w-3xl mx-auto px-4 py-12">
       {/* Section Heading */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-          Frequently Asked Questions
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+          <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">Help Center</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+          Frequently Asked <span className="text-orange-600">Questions</span>
         </h2>
-        <p className="mt-2 text-gray-600 max-w-lg mx-auto">
+        <p className="mt-2 text-sm text-slate-500 max-w-lg">
           Everything you need to know about our tours, bookings, and support.
         </p>
       </div>

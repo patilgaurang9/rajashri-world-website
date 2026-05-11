@@ -1,6 +1,9 @@
-# robots.txt for Rajashri World
+# *
 User-agent: *
 Allow: /
 
+# Host
 Host: https://rajashriworld.com
+
+# Sitemaps
 Sitemap: https://rajashriworld.com/sitemap.xml

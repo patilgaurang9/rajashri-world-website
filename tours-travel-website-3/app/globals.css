@@ -36,15 +36,24 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }
 
-/* Hero section 95% height without hydration issues */
+/* Hero section — auto-size on mobile, fixed height on desktop */
 .hero-section {
-  height: calc(95 * var(--vh));
-  min-height: 95vh;
+  min-height: auto;
+}
+@media (min-width: 1024px) {
+  .hero-section {
+    height: calc(95 * var(--vh));
+    min-height: 95vh;
+  }
 }
 
 /* Custom scrollbar */

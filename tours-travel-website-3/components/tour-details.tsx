@@ -107,14 +107,22 @@ export function TourDetails({ tour }: TourDetailsProps) {
       <div className="pt-28 pb-12 bg-white border-b border-gray-100">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-orange-600 font-bold text-xs uppercase tracking-[0.2em]">
-                <MapPin className="h-3.5 w-3.5" />
-                <span>{tour.location}</span>
+            <div className="space-y-4">
+              <Link 
+                href="/tours" 
+                className="flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-colors mb-4 group w-fit"
+              >
+                <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Back to Tours</span>
+              </Link>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+                <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">{tour.location || 'Featured Tour'}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight max-w-3xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight max-w-4xl">
                 {tour.title}
               </h1>
+
               <div className="flex flex-wrap items-center gap-6 text-slate-500 font-medium">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-slate-400" />
@@ -139,92 +147,108 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
           <div className="relative">
             {allMedia.length === 0 ? (
-              <div className="w-full h-[300px] bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-400">
+              <div className="w-full h-[260px] bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-400">
                 No media available
               </div>
-            ) : allMedia.length === 1 ? (
-              <div 
-                className="w-full h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden relative cursor-pointer shadow-xl"
-                onClick={() => openLightbox(0)}
-              >
-                <MediaItem media={allMedia[0]} title={tour.title} priority />
-              </div>
-            ) : allMedia.length === 2 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
-                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
-                  <MediaItem media={allMedia[0]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
-                  <MediaItem media={allMedia[1]} title={tour.title} />
-                </div>
-              </div>
-            ) : allMedia.length === 3 ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
-                <div className="md:col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
-                  <MediaItem media={allMedia[0]} title={tour.title} />
-                </div>
-                <div className="grid grid-rows-2 gap-3 h-full">
-                  <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
-                    <MediaItem media={allMedia[1]} title={tour.title} />
-                  </div>
-                  <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}>
-                    <MediaItem media={allMedia[2]} title={tour.title} />
-                  </div>
-                </div>
-              </div>
-            ) : allMedia.length === 4 ? (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
-                <div className="md:col-span-2 md:row-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}>
-                  <MediaItem media={allMedia[0]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}>
-                  <MediaItem media={allMedia[1]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}>
-                  <MediaItem media={allMedia[2]} title={tour.title} />
-                </div>
-                <div className="md:col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(3)}>
-                  <MediaItem media={allMedia[3]} title={tour.title} />
-                </div>
-              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
-                {/* Main large media - spanning 2x2 */}
-                <div 
-                  className="md:col-span-2 md:row-span-2 relative cursor-pointer overflow-hidden group/item h-full"
-                  onClick={() => openLightbox(0)}
-                >
-                  <MediaItem media={allMedia[0]} title={tour.title} priority />
-                </div>
+              <>
+                {/* ── MOBILE layout ── */}
+                <div className="md:hidden space-y-3">
+                  {/* Big hero image */}
+                  <div
+                    className="relative w-full h-[280px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl"
+                    onClick={() => openLightbox(0)}
+                  >
+                    <MediaItem media={allMedia[0]} title={tour.title} priority />
+                    {/* tap hint */}
+                    <div className="absolute inset-0 flex items-end justify-end p-4 pointer-events-none">
+                      <span className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full">
+                        <Maximize2 size={10} /> View All
+                      </span>
+                    </div>
+                  </div>
 
-                {/* Small items placed specifically in the 4x2 grid */}
-                <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(1)}>
-                  <MediaItem media={allMedia[1]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer overflow-hidden group/item rounded-tr-[2rem] h-full" onClick={() => openLightbox(2)}>
-                  <MediaItem media={allMedia[2]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(3)}>
-                  <MediaItem media={allMedia[3]} title={tour.title} />
-                </div>
-                <div className="relative cursor-pointer overflow-hidden group/item rounded-br-[2rem] h-full" onClick={() => openLightbox(4)}>
-                  <MediaItem media={allMedia[4]} title={tour.title} />
-                  {allMedia.length > 5 && (
-                    <div 
-                      className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white backdrop-blur-[4px] group-hover/item:bg-black/70 transition-all"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openLightbox(4);
-                      }}
+                  {/* Horizontal thumbnail strip */}
+                  {allMedia.length > 1 && (
+                    <div
+                      className="flex gap-2.5 overflow-x-auto pb-1"
+                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                      <div className="text-3xl font-black mb-1">+{allMedia.length - 5}</div>
-                      <div className="text-[8px] font-black uppercase tracking-[0.3em]">Full Gallery</div>
+                      {allMedia.slice(1).map((media, idx) => {
+                        const realIdx = idx + 1;
+                        const isLast = realIdx === allMedia.length - 1 && allMedia.length > 5;
+                        return (
+                          <div
+                            key={realIdx}
+                            className="relative flex-none w-[80px] h-[60px] rounded-xl overflow-hidden cursor-pointer shadow-md"
+                            onClick={() => openLightbox(realIdx)}
+                          >
+                            <MediaItem media={media} title={tour.title} />
+                            {isLast && allMedia.length > 5 && (
+                              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white">
+                                <span className="text-sm font-black">+{allMedia.length - 5}</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
-              </div>
+
+                {/* ── DESKTOP layouts ── */}
+                <div className="hidden md:block">
+                  {allMedia.length === 1 ? (
+                    <div
+                      className="w-full h-[500px] rounded-[2rem] overflow-hidden relative cursor-pointer shadow-xl"
+                      onClick={() => openLightbox(0)}
+                    >
+                      <MediaItem media={allMedia[0]} title={tour.title} priority />
+                    </div>
+                  ) : allMedia.length === 2 ? (
+                    <div className="grid grid-cols-2 gap-3 h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                      <div className="relative cursor-pointer h-full" onClick={() => openLightbox(0)}><MediaItem media={allMedia[0]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}><MediaItem media={allMedia[1]} title={tour.title} /></div>
+                    </div>
+                  ) : allMedia.length === 3 ? (
+                    <div className="grid grid-cols-3 gap-3 h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                      <div className="col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}><MediaItem media={allMedia[0]} title={tour.title} /></div>
+                      <div className="grid grid-rows-2 gap-3 h-full">
+                        <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}><MediaItem media={allMedia[1]} title={tour.title} /></div>
+                        <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}><MediaItem media={allMedia[2]} title={tour.title} /></div>
+                      </div>
+                    </div>
+                  ) : allMedia.length === 4 ? (
+                    <div className="grid grid-cols-4 gap-3 h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                      <div className="col-span-2 row-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(0)}><MediaItem media={allMedia[0]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer h-full" onClick={() => openLightbox(1)}><MediaItem media={allMedia[1]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer h-full" onClick={() => openLightbox(2)}><MediaItem media={allMedia[2]} title={tour.title} /></div>
+                      <div className="col-span-2 relative cursor-pointer h-full" onClick={() => openLightbox(3)}><MediaItem media={allMedia[3]} title={tour.title} /></div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[500px] rounded-[2rem] overflow-hidden shadow-xl">
+                      <div className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(0)}>
+                        <MediaItem media={allMedia[0]} title={tour.title} priority />
+                      </div>
+                      <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(1)}><MediaItem media={allMedia[1]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer overflow-hidden group/item rounded-tr-[2rem] h-full" onClick={() => openLightbox(2)}><MediaItem media={allMedia[2]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer overflow-hidden group/item h-full" onClick={() => openLightbox(3)}><MediaItem media={allMedia[3]} title={tour.title} /></div>
+                      <div className="relative cursor-pointer overflow-hidden group/item rounded-br-[2rem] h-full" onClick={() => openLightbox(4)}>
+                        <MediaItem media={allMedia[4]} title={tour.title} />
+                        {allMedia.length > 5 && (
+                          <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white backdrop-blur-[4px]">
+                            <div className="text-3xl font-black mb-1">+{allMedia.length - 5}</div>
+                            <div className="text-[8px] font-black uppercase tracking-[0.3em]">Full Gallery</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
+
           
           {/* Journey Breakdown Badges - Moved to Top */}
           {Array.isArray(days_breakdown) && days_breakdown.length > 0 && (
@@ -528,7 +552,19 @@ export function TourDetails({ tour }: TourDetailsProps) {
 
       {/* Lightbox / Full Gallery */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-[100vw] w-screen h-screen p-0 m-0 border-none bg-black/95 backdrop-blur-2xl transition-all duration-500 overflow-hidden">
+        <DialogContent
+          className="!fixed !inset-0 !max-w-none !p-0 !m-0 !border-none !rounded-none bg-black/95 backdrop-blur-2xl !flex !flex-col !gap-0"
+          style={{ 
+            zIndex: 9999, 
+            width: '100vw', 
+            height: '100vh', 
+            left: 0, 
+            top: 0, 
+            transform: 'none',
+            maxWidth: 'none',
+            maxHeight: 'none'
+          }}
+        >
           <DialogHeader className="sr-only">
             <DialogTitle>Photo Gallery</DialogTitle>
           </DialogHeader>
@@ -550,15 +586,17 @@ export function TourDetails({ tour }: TourDetailsProps) {
             </div>
 
             {/* Main Media Display */}
-            <div className="flex-1 flex items-center justify-center relative px-4 md:px-20">
-              <button 
+            <div className="flex-1 relative w-full flex items-center justify-center">
+              {/* Prev button — pinned to left edge */}
+              <button
                 onClick={() => setActiveMediaIndex((prev) => (prev > 0 ? prev - 1 : allMedia.length - 1))}
-                className="absolute left-6 md:left-10 z-50 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
+                className="absolute left-3 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
               >
-                <ChevronLeft size={32} />
+                <ChevronLeft size={24} />
               </button>
-              
-              <div className="relative w-full h-[70vh] md:h-[80vh] max-w-7xl overflow-hidden animate-in zoom-in-95 duration-500">
+
+              {/* Image */}
+              <div className="relative w-full h-full overflow-hidden">
                 {allMedia[activeMediaIndex]?.type === 'image' ? (
                   <Image
                     src={allMedia[activeMediaIndex].url}
@@ -568,25 +606,26 @@ export function TourDetails({ tour }: TourDetailsProps) {
                     priority
                   />
                 ) : (
-                  <video 
-                    src={allMedia[activeMediaIndex]?.url} 
-                    controls 
-                    autoPlay 
+                  <video
+                    src={allMedia[activeMediaIndex]?.url}
+                    controls
+                    autoPlay
                     className="w-full h-full object-contain"
                   />
                 )}
               </div>
 
-              <button 
+              {/* Next button — pinned to right edge */}
+              <button
                 onClick={() => setActiveMediaIndex((prev) => (prev < allMedia.length - 1 ? prev + 1 : 0))}
-                className="absolute right-6 md:right-10 z-50 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
+                className="absolute right-3 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90"
               >
-                <ChevronRight size={32} />
+                <ChevronRight size={24} />
               </button>
             </div>
 
             {/* Thumbnail Strip */}
-            <div className="h-24 p-4 bg-black/40 backdrop-blur-xl border-t border-white/5 flex items-center justify-center gap-3 overflow-x-auto no-scrollbar">
+            <div className="h-24 w-full p-4 bg-black/40 backdrop-blur-xl border-t border-white/5 flex items-center justify-center gap-3 overflow-x-auto no-scrollbar">
               {allMedia.map((media, idx) => (
                 <button
                   key={idx}

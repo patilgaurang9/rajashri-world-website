@@ -69,51 +69,57 @@ export function TestimonialsSection() {
       </div>
 
       <div className="relative container mx-auto px-4">
-        <div className="max-w-5xl mx-auto mb-6 md:mb-8 text-left">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">What Our Travellers Say</h2>
-          <p className="text-white/90 text-sm md:text-base mt-2 max-w-xl">
-            Real stories from our happy travellers across destinations.
-          </p>
-        </div>
+        <div className="max-w-5xl mx-auto">
+          {/* Heading */}
+          <div className="mb-6 md:mb-8">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-0.5 bg-orange-400 rounded-full" />
+              <span className="text-orange-300 font-black text-xs uppercase tracking-[0.25em]">Reviews</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">What Our Travellers <span className="text-orange-400">Say</span></h2>
+            <p className="text-white/70 text-sm mt-2 max-w-md">
+              Real stories from our happy travellers across destinations.
+            </p>
+          </div>
 
-        <div className="relative max-w-5xl mx-auto">
+          {/* Card — shares same left edge as heading above */}
+          <div>
           {isLoading ? (
             <TestimonialSkeleton />
           ) : (
-            <Card className="bg-white/95 border-0 shadow-2xl rounded-3xl overflow-hidden min-h-[390px]">
-              <CardContent className="p-3 sm:p-4 md:p-5 h-full">
-                <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 md:gap-6 items-stretch min-h-[350px]">
-                  <div className="rounded-3xl p-1.5">
-                    <div className="relative h-full w-full rounded-[24px] overflow-hidden">
-                      <Image
-                        src={dbReviews[currentIndex]?.avatar || "/placeholder.svg"}
-                        alt={dbReviews[currentIndex]?.name || "Reviewer"}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 280px"
-                      />
-                      <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1.5 text-black text-sm font-semibold shadow-lg">
-                        {dbReviews[currentIndex]?.name}
-                      </div>
+            <Card className="bg-white/95 border-0 shadow-2xl rounded-3xl overflow-hidden">
+              <CardContent className="p-0">
+                {/* Desktop layout: side-by-side image + text */}
+                <div className="hidden md:grid md:grid-cols-[280px_1fr] gap-0 items-stretch min-h-[380px]">
+                  <div className="relative">
+                    <Image
+                      src={dbReviews[currentIndex]?.avatar || "/placeholder.svg"}
+                      alt={dbReviews[currentIndex]?.name || "Reviewer"}
+                      fill
+                      className="object-cover"
+                      sizes="280px"
+                    />
+                    <div className="absolute bottom-4 left-4 bg-white rounded-full px-3 py-1.5 text-black text-sm font-semibold shadow-lg">
+                      {dbReviews[currentIndex]?.name}
                     </div>
                   </div>
 
-                  <div className="flex flex-col justify-center py-1 md:py-2">
-                    <div className="flex items-center gap-1 mb-3">
+                  <div className="flex flex-col justify-center p-8">
+                    <div className="flex items-center gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${i < dbReviews[currentIndex]?.rating
+                          className={`h-5 w-5 ${i < dbReviews[currentIndex]?.rating
                               ? "fill-orange-500 text-orange-500"
                               : "fill-gray-200 text-gray-200"
                             }`}
                         />
                       ))}
-                      <span className="ml-2 text-sm text-gray-600">({dbReviews[currentIndex]?.rating}/5)</span>
+                      <span className="ml-2 text-sm text-gray-500">({dbReviews[currentIndex]?.rating}/5)</span>
                     </div>
 
-                    <blockquote className="text-base sm:text-lg text-gray-800 leading-relaxed mb-4">
-                      "{dbReviews[currentIndex]?.content}"
+                    <blockquote className="text-lg text-gray-800 leading-relaxed mb-5">
+                      &ldquo;{dbReviews[currentIndex]?.content}&rdquo;
                     </blockquote>
 
                     <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
@@ -121,7 +127,7 @@ export function TestimonialsSection() {
                       {dbReviews[currentIndex]?.location}
                     </div>
 
-                    <div className="flex items-center gap-2 mt-5">
+                    <div className="flex items-center gap-2 mt-6">
                       <Button
                         type="button"
                         variant="outline"
@@ -142,9 +148,85 @@ export function TestimonialsSection() {
                     </div>
                   </div>
                 </div>
+
+                {/* Mobile layout: compact card */}
+                <div className="md:hidden p-5">
+                  {/* Reviewer info row */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-orange-100">
+                      <Image
+                        src={dbReviews[currentIndex]?.avatar || "/placeholder.svg"}
+                        alt={dbReviews[currentIndex]?.name || "Reviewer"}
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-gray-900 truncate">{dbReviews[currentIndex]?.name}</p>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                        <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                        {dbReviews[currentIndex]?.location}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Stars */}
+                  <div className="flex items-center gap-0.5 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < dbReviews[currentIndex]?.rating
+                            ? "fill-orange-500 text-orange-500"
+                            : "fill-gray-200 text-gray-200"
+                          }`}
+                      />
+                    ))}
+                    <span className="ml-1.5 text-xs text-gray-500">({dbReviews[currentIndex]?.rating}/5)</span>
+                  </div>
+
+                  {/* Quote */}
+                  <blockquote className="text-sm text-gray-700 leading-relaxed mb-5">
+                    &ldquo;{dbReviews[currentIndex]?.content}&rdquo;
+                  </blockquote>
+
+                  {/* Navigation + dots */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={prevTestimonial}
+                        className="h-8 w-8 p-0 rounded-full border-gray-300 text-gray-600 hover:bg-black hover:text-white hover:border-black"
+                        aria-label="Previous review"
+                      >
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={nextTestimonial}
+                        className="h-8 w-8 p-0 rounded-full bg-black text-white hover:bg-black/90"
+                        aria-label="Next review"
+                      >
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {dbReviews.slice(0, Math.min(dbReviews.length, 5)).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            i === currentIndex % Math.min(dbReviews.length, 5) ? "w-5 bg-orange-500" : "w-1.5 bg-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}
+          </div>
         </div>
       </div>
     </section>

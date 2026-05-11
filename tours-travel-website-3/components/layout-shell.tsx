@@ -20,7 +20,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       <Navbar />
       <ReelPopup />
       <EnquiryPopup />
-      <main className="min-h-screen">{children}</main>
+      <main className="min-h-screen pt-16">{children}</main>
       <Footer />
     </>
   )

@@ -45,13 +45,17 @@ export default function GalleryPage() {
             <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
             <span className="text-xs font-black uppercase tracking-widest">Back to Home</span>
           </Link>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-none mb-6">
-            Cinematic <br />
-            <span className="text-orange-600">Travel Gallery</span>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-0.5 bg-orange-600 rounded-full" />
+            <span className="text-orange-600 font-black text-xs uppercase tracking-[0.25em]">Cinematic</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-none mb-4">
+            Travel <span className="text-orange-600">Gallery</span>
           </h1>
-          <p className="text-xl text-slate-500 font-medium leading-relaxed">
-            Experience the magic of India through our carefully curated video collection. From hidden gems to iconic landmarks.
+          <p className="text-base sm:text-lg text-slate-500 font-medium leading-relaxed max-w-xl">
+            Experience the magic through our carefully curated collection. From hidden gems to iconic landmarks.
           </p>
+
         </div>
 
         {/* Video Grid */}

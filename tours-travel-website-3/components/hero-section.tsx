@@ -138,7 +138,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative flex items-center justify-center overflow-hidden px-4 py-10 sm:py-14 min-h-[80vh] hero-section">
+    <section className="relative overflow-hidden px-4 pt-20 pb-8 sm:pt-24 sm:pb-12 lg:pt-0 lg:pb-0 -mt-16 hero-section">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -154,7 +154,7 @@ export function HeroSection() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto mt-6 sm:mt-8">
+      <div className="relative z-10 w-full max-w-7xl mx-auto lg:flex lg:items-center lg:min-h-[calc(95vh-4rem)]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
           {/* Left Content */}
           <div className="text-left lg:pr-8 lg:pl-3">
